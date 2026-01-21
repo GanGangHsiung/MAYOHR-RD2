@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Matrix Org Chart - Logic Highlight</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reactflow@11.10.1/dist/umd/index.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reactflow@11.10.1/dist/style.css" />
+    <style>
+        body, html, #root { width: 100%; height: 100%; margin: 0; padding: 0; }
+        .highlight { border: 2px solid #3498db !important; box-shadow: 0 0 15px #3498db; background: #ebf5fb !important; transition: all 0.3s; }
+        .dimmed { opacity: 0.3; transition: opacity 0.3s; }
+        .controls-info { position: absolute; top: 10px; left: 10px; z-index: 5; background: rgba(255,255,255,0.8); padding: 10px; border-radius: 5px; font-family: sans-serif; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <div class="controls-info">點擊方塊觸發自定義邏輯高亮</div>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useCallback } = React;
+        const ReactFlow = window.ReactFlow.default;
+        const { addEdge, Background, Controls, applyEdgeChanges, applyNodeChanges } = window.ReactFlow;
+
+        const initialNodes = [
+            { id: '1', data: { label: 'RD 部門', group: 'admin' }, position: { x: 400, y: 0 } },
+            { id: '2', data: { label: '技術週會', group: 'meeting' }, position: { x: 200, y: 100 } },
+            { id: '3', data: { label: '專案週會', group: 'meeting' }, position: { x: 600, y: 100 } },
+            { id: '4', data: { label: 'Marcus (產品)', group: 'team-a' }, position: { x: 100, y: 200 } },
+            { id: '5', data: { label: 'Jack (前端)', group: 'team-a' }, position: { x: 100, y: 300 } },
+            { id: '6', data: { label: 'Liz (LTV)', group: 'team-b' }, position: { x: 400, y: 200 } },
+            { id: '7', data: { label: 'Jimmy (出勤)', group: 'team-b' }, position: { x: 400, y: 300 } },
+        ];
+
+        const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }, { id: 'e1-3', source: '1', target: '3' }];
+
+        function App() {
+            const [nodes, setNodes] = useState(initialNodes);
+            const [edges, setEdges] = useState(initialEdges);
+
+            const onNodeClick = (event, clickedNode) => {
+                // --- 這裡可以自定義函數條件 ---
+                const highlightIds = initialNodes
+                    .filter(n => {
+                        // 範例：如果點擊的是 group A，則亮起所有 group A 的人
+                        return n.data.group === clickedNode.data.group;
+                    })
+                    .map(n => n.id);
+                // --------------------------
+
+                setNodes((nds) => nds.map((node) => ({
+                    ...node,
+                    className: highlightIds.includes(node.id) ? 'highlight' : 'dimmed'
+                })));
+            };
+
+            const onPaneClick = () => {
+                setNodes((nds) => nds.map((node) => ({ ...node, className: '' })));
+            };
+
+            const onNodesChange = useCallback((chs) => setNodes((nds) => applyNodeChanges(chs, nds)), []);
+            const onEdgesChange = useCallback((chs) => setEdges((eds) => applyEdgeChanges(chs, eds)), []);
+            const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
+
+            return (
+                <div style={{ width: '100vw', height: '100vh' }}>
+                    <ReactFlow
+                        nodes={nodes}
+                        edges={edges}
+                        onNodesChange={onNodesChange}
+                        onEdgesChange={onEdgesChange}
+                        onConnect={onConnect}
+                        onNodeClick={onNodeClick}
+                        onPaneClick={onPaneClick}
+                        fitView
+                    >
+                        <Background />
+                        <Controls />
+                    </ReactFlow>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
