@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GigSwipe Pro - Exclusive Demo</title>
+    <title>GigSwipe Pro - Vibrant Edition</title>
     <style>
         :root {
             --primary-pink: #FF4B7D;
+            --soft-pink: #FFE5EC;
             --business-blue: #4B79FF;
-            --light-bg: #F8F9FA;
-            --shadow: 0 10px 25px rgba(0,0,0,0.1);
+            --soft-blue: #E5EDFF;
+            --text-dark: #2D2D2D;
+            --shadow: 0 10px 30px rgba(0,0,0,0.12);
         }
 
         body {
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            background-color: #2c2c2c;
+            background-color: #1a1a1a;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,183 +25,166 @@
             overflow: hidden;
         }
 
-        /* 手機外殼 */
+        /* 比例優化後的手機外殼 */
         .phone {
-            width: 375px;
-            height: 750px;
-            background: white;
-            border-radius: 40px;
-            border: 10px solid #1a1a1a;
+            width: 360px;
+            height: 660px;
+            background: #fff;
+            border-radius: 45px;
+            border: 8px solid #333;
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
 
-        /* 啟動頁面 (Splash Screen) */
+        /* 啟動頁面 - 熱情亮粉紅 */
         #splash {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--primary-pink);
+            background: linear-gradient(145deg, #FF4B7D, #FF7597);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            transition: opacity 0.8s ease-out;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .logo-icon {
-            font-size: 80px;
-            color: white;
-            margin-bottom: 20px;
-            animation: pulse 1.5s infinite;
-        }
-        .logo-text { color: white; font-size: 32px; font-weight: 900; letter-spacing: 2px; }
+        .logo-icon { font-size: 80px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1)); animation: pulse 1.8s infinite; }
+        .logo-text { color: white; font-size: 32px; font-weight: 900; letter-spacing: 2px; margin-top: 15px; }
+
         @keyframes pulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.08); }
             100% { transform: scale(1); }
         }
 
-        /* 角色切換鈕 */
+        /* 頂部角色切換 */
         .role-switcher {
             display: flex;
-            background: #f0f0f0;
-            margin: 20px 15px 10px;
-            border-radius: 25px;
-            padding: 5px;
+            background: #f5f5f7;
+            margin: 15px 20px 5px;
+            border-radius: 20px;
+            padding: 4px;
             z-index: 10;
         }
         .role-btn {
             flex: 1;
-            padding: 10px;
+            padding: 8px;
             border: none;
-            border-radius: 20px;
+            border-radius: 18px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 13px;
+            color: #A0A0A0;
             transition: 0.3s;
-            font-size: 14px;
-            color: #888;
         }
-        .role-btn.active { background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .role-btn.active { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
         .role-btn.c-active { color: var(--primary-pink); }
         .role-btn.b-active { color: var(--business-blue); }
 
-        /* 內容區 */
-        .content { position: relative; flex: 1; padding: 15px; overflow: hidden; background: #fff; }
+        /* 卡片內容區 */
+        .content { position: relative; flex: 1; padding: 10px 15px; overflow: hidden; }
 
-        /* 卡片樣式 */
         .card {
             position: absolute;
-            width: 315px;
-            height: 480px;
+            width: 310px;
+            height: 420px;
             background: white;
-            border-radius: 25px;
+            border-radius: 28px;
             box-shadow: var(--shadow);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.15), opacity 0.4s;
             overflow: hidden;
             border: 1px solid #f0f0f0;
         }
-        .card img { width: 100%; height: 65%; object-fit: cover; }
-        .card-info { padding: 20px; }
-        .card-info h3 { margin: 0; font-size: 22px; color: #333; }
-        .card-info p { margin: 5px 0; color: #777; font-size: 14px; }
-        .tag { background: #FFE5EC; color: var(--primary-pink); padding: 4px 10px; border-radius: 12px; font-size: 12px; margin-right: 5px; font-weight: bold; }
-
-        /* B端 樣式 */
+        .card img { width: 100%; height: 62%; object-fit: cover; }
+        .card-info { padding: 18px; }
+        .card-info h3 { margin: 0; font-size: 20px; color: var(--text-dark); font-weight: 700; }
+        .card-info p { margin: 5px 0; color: #666; font-size: 13px; }
+        .tag { padding: 4px 10px; border-radius: 12px; font-size: 11px; margin-right: 5px; font-weight: 600; display: inline-block; margin-top: 6px; }
+        
+        /* C端樣式 */
+        .c-tag { background: var(--soft-pink); color: var(--primary-pink); }
+        /* B端樣式 */
         .b-view { display: none; }
-        .talent-card .tag { background: #E5EDFF; color: var(--business-blue); }
+        .b-tag { background: var(--soft-blue); color: var(--business-blue); }
 
-        /* 對話視窗 */
-        #chatBox {
-            position: absolute;
-            bottom: -100%;
-            left: 0;
-            width: 100%;
-            height: 92%;
-            background: white;
-            z-index: 100;
-            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            border-radius: 30px 30px 0 0;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
+        /* 底部按鈕 */
+        .controls { display: flex; justify-content: center; gap: 35px; padding: 10px 0 25px 0; }
+        .round-btn { 
+            width: 60px; height: 60px; border-radius: 50%; border: none; 
+            cursor: pointer; font-size: 24px; box-shadow: 0 6px 15px rgba(0,0,0,0.1); 
+            transition: transform 0.2s; background: white;
         }
-        .chat-header { padding: 20px; background: var(--primary-pink); color: white; text-align: center; font-weight: bold; border-radius: 30px 30px 0 0; }
-        .chat-messages { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; background: #f9f9f9; }
-        .msg { padding: 12px 16px; border-radius: 20px; max-width: 80%; font-size: 15px; }
-        .msg.received { background: white; align-self: flex-start; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .msg.sent { background: var(--primary-pink); color: white; align-self: flex-end; }
+        .btn-x { color: #FF5A5F; border: 2px solid #FF5A5F; }
+        .btn-heart { background: linear-gradient(135deg, #FF4B7D, #FF7597); color: white; }
+        .round-btn:active { transform: scale(0.88); }
 
-        /* 控制按鈕 */
-        .controls { display: flex; justify-content: center; gap: 30px; padding: 20px 0 30px 0; }
-        .round-btn { width: 65px; height: 65px; border-radius: 50%; border: none; cursor: pointer; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.2s; }
-        .btn-x { color: #ff4d4d; background: white; border: 1.5px solid #ff4d4d; }
-        .btn-heart { background: var(--primary-pink); color: white; }
-        .round-btn:active { transform: scale(0.85); }
-
-        /* Match 成功彈窗 */
+        /* Match 成功畫面 */
         #matchAnim {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 75, 125, 0.98);
-            display: none; flex-direction: column; justify-content: center; align-items: center;
-            color: white; z-index: 200; text-align: center;
+            background: rgba(255, 75, 125, 0.98); display: none; flex-direction: column;
+            justify-content: center; align-items: center; color: white; z-index: 200; text-align: center;
         }
+        
+        /* 對話視窗 */
+        #chatBox {
+            position: absolute; bottom: -100%; left: 0; width: 100%; height: 92%;
+            background: white; z-index: 100; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; flex-direction: column; border-radius: 35px 35px 0 0;
+        }
+        .chat-header { padding: 20px; background: var(--primary-pink); color: white; text-align: center; font-weight: bold; font-size: 18px; }
     </style>
 </head>
 <body>
 
 <div class="phone">
     <div id="splash" onclick="closeSplash()">
-        <div class="logo-icon">🔥</div>
+        <div class="logo-icon">💖</div>
         <div class="logo-text">GigSwipe</div>
-        <p style="color: white; opacity: 0.8; margin-top: 20px; font-size: 14px;">點擊螢幕進入</p>
+        <p style="color: white; opacity: 0.9; margin-top: 20px; font-size: 13px; font-weight: 500;">遇見最心動的打工</p>
     </div>
 
     <div class="role-switcher">
-        <button class="role-btn active c-active" onclick="switchRole('C')">我是打工族</button>
-        <button class="role-btn" id="bBtn" onclick="switchRole('B')">我是老闆</button>
+        <button class="role-btn active c-active" onclick="switchRole('C')">探索職缺</button>
+        <button class="role-btn" id="bBtn" onclick="switchRole('B')">找尋夥伴</button>
     </div>
 
     <div class="content" id="cView">
         <div class="card" style="z-index:3" id="c1">
-            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400" alt="MAYO">
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=500&q=80" alt="MAYO Team">
             <div class="card-info">
                 <h3>MAYO 臨時工</h3>
-                <p>📍 竹北辦公室 | $200/hr</p>
-                <div style="margin-top:10px;">
-                    <span class="tag">#行政支援</span><span class="tag">#MAYO</span><span class="tag">#現領</span>
-                </div>
+                <p>📍 遠端/竹北 | $200/hr</p>
+                <span class="tag c-tag">#彈性工作</span><span class="tag c-tag">#熱情團隊</span><span class="tag c-tag">#MAYO</span>
             </div>
         </div>
         <div class="card" style="z-index:2" id="c2">
-            <img src="https://images.unsplash.com/photo-1559925393-8be0ec41b50b?w=400" alt="Cafe">
+            <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=500&q=80" alt="Cafe Smile">
             <div class="card-info">
-                <h3>藍瓶子風格咖啡店</h3>
-                <p>📍 中山區 | $195/hr</p>
-                <span class="tag">#精品咖啡</span><span class="tag">#環境美</span>
+                <h3>陽光風格咖啡廳</h3>
+                <p>📍 中山區 | $190/hr</p>
+                <span class="tag c-tag">#清新環境</span><span class="tag c-tag">#學習手沖</span>
             </div>
         </div>
     </div>
 
     <div class="content b-view" id="bView">
         <div class="card talent-card" style="z-index:3" id="b1">
-            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400" alt="熊小剛">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80" alt="熊小剛">
             <div class="card-info">
                 <h3>熊小剛 (24歲)</h3>
-                <p>🎓 國立交通大學 | 資訊背景</p>
-                <div style="margin-top:10px;">
-                    <span class="tag">#細心可靠</span><span class="tag">#熟悉Excel</span>
-                </div>
+                <p>🎓 交通大學 | 充滿熱情</p>
+                <span class="tag b-tag">#科技宅但外向</span><span class="tag b-tag">#專業Excel</span>
             </div>
         </div>
         <div class="card talent-card" style="z-index:2" id="b2">
-            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400" alt="Jimmy">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=500&q=80" alt="Jimmy">
             <div class="card-info">
                 <h3>Jimmy (22歲)</h3>
-                <p>🎓 銘傳大學 | 設計背景</p>
-                <span class="tag">#視覺美感</span><span class="tag">#手速快</span>
+                <p>🎓 銘傳設計 | 視覺擔當</p>
+                <span class="tag b-tag">#美感細膩</span><span class="tag b-tag">#活動經驗豐</span>
             </div>
         </div>
     </div>
@@ -209,30 +194,29 @@
         <button class="round-btn btn-heart" onclick="swipe('right')">❤</button>
     </div>
 
-    <div id="chatBox">
-        <div class="chat-header" id="chatTitle">招募經理</div>
-        <div class="chat-messages" id="chatMsgs">
-            <div class="msg received">你好！看到你的 Match 了，這週五能來面試嗎？</div>
-        </div>
-        <div style="padding:15px; border-top:1px solid #eee; display:flex;">
-            <input type="text" placeholder="輸入訊息..." style="flex:1; border:none; outline:none; font-size:16px;">
-            <button style="border:none; background:none; color:var(--primary-pink); font-weight:bold; font-size:16px;" onclick="toggleChat(false)">關閉</button>
-        </div>
+    <div id="matchAnim" onclick="this.style.display='none'; toggleChat(true);">
+        <h1 style="font-size: 38px; margin:0; letter-spacing: 3px;">IT'S A MATCH!</h1>
+        <p id="matchText" style="font-size: 18px; margin-top: 10px;">MAYO 鼎恆數位 也想認識你</p>
+        <div style="margin-top: 50px; padding: 10px 25px; border: 2px solid white; border-radius: 30px; font-weight: bold;">傳送訊息</div>
     </div>
 
-    <div id="matchAnim" onclick="this.style.display='none'; toggleChat(true);">
-        <h1 style="font-size: 40px; margin:0;">IT'S A MATCH!</h1>
-        <p id="matchText">MAYO 鼎恆數位 也想認識你</p>
-        <p style="font-size:12px; margin-top:50px; opacity: 0.7;">點擊畫面開始對話</p>
+    <div id="chatBox">
+        <div class="chat-header" id="chatTitle">招募經理</div>
+        <div style="flex:1; background:#F5F5F7; padding:20px;">
+            <div style="background:white; padding:12px 16px; border-radius:18px 18px 18px 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); font-size: 14px; line-height: 1.5; color: #444;">
+                你好！剛看過你的 Profile，非常適合我們這次的專案，想約明天下午兩點聊聊嗎？☀️
+            </div>
+        </div>
+        <button onclick="toggleChat(false)" style="padding:18px; border:none; background:var(--primary-pink); color:white; font-weight:bold; font-size: 16px;">關閉並回首頁</button>
     </div>
 </div>
 
 <script>
-    // 啟動頁控制
     function closeSplash() {
         const splash = document.getElementById('splash');
+        splash.style.transform = 'scale(1.2)';
         splash.style.opacity = '0';
-        setTimeout(() => splash.style.display = 'none', 800);
+        setTimeout(() => splash.style.display = 'none', 600);
     }
 
     let role = 'C';
@@ -252,14 +236,14 @@
         if(r === 'C') {
             cV.style.display = 'block'; bV.style.display = 'none';
             btns[0].classList.add('active', 'c-active');
-            heartBtn.style.backgroundColor = '#FF4B7D';
+            heartBtn.style.background = 'linear-gradient(135deg, #FF4B7D, #FF7597)';
             chatH.style.backgroundColor = '#FF4B7D';
             document.getElementById('matchText').innerText = "MAYO 鼎恆數位 也想認識你";
             document.getElementById('chatTitle').innerText = "MAYO 招募經理";
         } else {
             cV.style.display = 'none'; bV.style.display = 'block';
             btns[1].classList.add('active', 'b-active');
-            heartBtn.style.backgroundColor = '#4B79FF';
+            heartBtn.style.background = 'linear-gradient(135deg, #4B79FF, #7597FF)';
             chatH.style.backgroundColor = '#4B79FF';
             document.getElementById('matchText').innerText = "候選人已接受您的邀約";
             document.getElementById('chatTitle').innerText = "候選人：熊小剛";
@@ -272,10 +256,9 @@
         if(!card) return;
 
         if(dir === 'left') {
-            card.style.transform = 'translateX(-150%) rotate(-30deg)';
+            card.style.transform = 'translateX(-160%) rotate(-25deg)';
         } else {
-            card.style.transform = 'translateX(150%) rotate(30deg)';
-            // 模擬 Match 機率
+            card.style.transform = 'translateX(160%) rotate(25deg)';
             if((role === 'C' && cIndex === 1) || (role === 'B' && bIndex === 1)) {
                 setTimeout(() => document.getElementById('matchAnim').style.display = 'flex', 300);
             }
