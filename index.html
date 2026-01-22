@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 寶馬狂奔 - 熊剛的紅包抽獎</title>
+    <title>2026 寶馬狂奔 - 熊剛的超級馬力紅包</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        :root { --primary-red: #e63946; --gold: #ffb703; --pink: #ff69b4; --dark-red: #9b2226; --shiny-gold: #fff3b0; --bg-gradient: linear-gradient(135deg, #8b0000 0%, #e63946 50%, #d00000 100%); }
+        :root { --primary-red: #e63946; --gold: #ffb703; --pink: #ff69b4; --dark-red: #9b2226; --shiny-gold: #fff3b0; --bg-gradient: linear-gradient(135deg, #1e3799 0%, #e63946 50%, #d00000 100%); }
         body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg-gradient); height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; }
         
         /* 紅包雨 */
@@ -32,8 +32,8 @@
         button { background: linear-gradient(to bottom, var(--primary-red), var(--dark-red)); color: white; border: none; padding: 16px 28px; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; box-shadow: 0 6px 20px rgba(155, 34, 38, 0.4); transition: 0.3s; width: 100%; margin-top: 10px; position: relative; overflow: hidden; }
         button:active { transform: scale(0.95); }
 
-        /* --- 優化後的老虎機樣式 --- */
-        .slot-machine { background: linear-gradient(145deg, #fff0f5, #fff9f0); border-radius: 20px; padding: 20px 10px; margin: 15px 0; border: 3px double var(--gold); }
+        /* 老虎機樣式 */
+        .slot-machine { background: linear-gradient(145deg, #f1f2f6, #fff9f0); border-radius: 20px; padding: 20px 10px; margin: 15px 0; border: 3px double var(--gold); }
         .slot-reel { 
             width: 45px; height: 65px; 
             background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 50%, #ffffff 100%); 
@@ -46,37 +46,34 @@
             overflow: hidden; transition: all 0.1s; 
         }
         
-        /* 旋轉霓虹特效 */
         .spinning { 
             filter: blur(1.5px); transform: scale(1.05); 
-            border-color: var(--pink);
-            background: linear-gradient(180deg, #fff3b0 0%, #ffffff 50%, #fff3b0 100%);
+            border-color: #0097e6;
+            background: linear-gradient(180deg, #dff9fb 0%, #ffffff 50%, #dff9fb 100%);
             animation: pulseBorder 0.2s infinite alternate;
         }
         @keyframes pulseBorder {
-            from { box-shadow: 0 0 5px var(--gold); }
-            to { box-shadow: 0 0 15px var(--pink); }
+            from { box-shadow: 0 0 5px #0097e6; }
+            to { box-shadow: 0 0 15px #f1c40f; }
         }
 
         .history-pills { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 10px;}
         .pill { background: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; color: var(--dark-red); border: 1px solid var(--gold); font-weight: bold; animation: popIn 0.3s ease; }
         @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
 
-        /* 最終金額特效 */
         .final-amount { font-size: 3.5rem; color: var(--primary-red); font-weight: 900; text-shadow: 4px 4px 0px var(--gold); background: linear-gradient(90deg, #ffb703, #fff, #ffb703); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: goldShine 3s linear infinite; display: inline-block; margin: 10px 0; }
         @keyframes goldShine { 0% { background-position: -200%; } 100% { background-position: 200%; } }
 
         .lucky-bag { font-size: 80px; display: none; margin: 20px auto; animation: shake 0.5s infinite; }
         @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(10deg); } 50% { transform: rotate(0deg); } 75% { transform: rotate(-10deg); } 100% { transform: rotate(0deg); } }
 
-        /* 誇獎與按鈕區 */
         #praiseSection { display: none; margin-top: 20px; padding: 15px; background: #fffceb; border-radius: 15px; border: 2px dashed #ffb703; animation: slideUp 0.8s ease; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         .line-btn { background: linear-gradient(135deg, #06c755 0%, #009900 100%); animation: pulse-line 2s infinite; box-shadow: 0 5px 15px rgba(6, 199, 85, 0.4); }
         @keyframes pulse-line { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
         
-        .bonus-note { background: #ffeaea; color: #d63031; font-weight: bold; padding: 8px; border-radius: 8px; border: 1px solid #ff7675; display: none; font-size: 0.9rem; margin: 10px 0; animation: blink 2s infinite; }
+        .bonus-note { background: #e3f2fd; color: #1565c0; font-weight: bold; padding: 8px; border-radius: 8px; border: 1px solid #90caf9; display: none; font-size: 0.9rem; margin: 10px 0; animation: blink 2s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
     </style>
 </head>
@@ -89,44 +86,44 @@
 
 <div class="container">
     <div id="step1" class="step active">
-        <h2>🐍 2026 靈蛇獻瑞</h2>
+        <h2>🐎 2026 馬到成功</h2>
         <p>紅包領取系統身分識別：</p>
         <input type="text" id="nameInput" placeholder="請輸入誰是世界上最帥的兒子？">
-        <button onclick="App.checkStep1()">開啟福氣門</button>
+        <button onclick="App.checkStep1()">踩下油門啟動 🏁</button>
     </div>
 
     <div id="step2" class="step">
-        <h2>🐍 蛇序呈祥</h2>
+        <h2>🏎️ 萬馬奔騰</h2>
         <p>回顧 2025 年對愛子「熊剛」評分：</p>
         <select id="satisfaction">
             <option value="">-- 請給予愛的評分 --</option>
-            <option value="100">✨ 完美！兒子是我的驕傲</option>
-            <option value="90">✨ 優秀！今年表現亮眼</option>
-            <option value="80">✨ 滿意！穩定進步中</option>
+            <option value="100">⭐️ 滿星！像超級馬力歐一樣強</option>
+            <option value="90">⭐️ 優秀！像寶馬一樣平穩可靠</option>
+            <option value="80">⭐️ 滿意！持續加速前進中</option>
         </select>
-        <button onclick="App.checkStep2()">確認評鑑</button>
+        <button onclick="App.checkStep2()">確認引擎動力</button>
     </div>
 
     <div id="step3" class="step">
         <h2>💖 熊剛的悄悄話</h2>
-        <div style="text-align: left; background: #fff5f5; padding: 15px; border-radius: 15px; border-left: 5px solid var(--primary-red);">
+        <div style="text-align: left; background: #f1f2f6; padding: 15px; border-radius: 15px; border-left: 5px solid #1e3799;">
             <p style="margin: 0; font-size: 0.95rem;">
-                親愛的媽媽，台北生活步調快，常常忙到沒時間好好陪您。<br><br>
-                2026 蛇年到了，這份紅包不只是金額，更代表我滿滿的感謝與愛。<b>不論抽到多少，兒子的孝心都是不打折的！</b>
+                親愛的媽媽，生活就像一場賽車，有時候很快，有時候要進站休息。<br><br>
+                2026 馬年到了，願妳擁有<b>「寶馬」般的尊貴享受</b>與<b>「超級馬力」般的無限活力</b>！這份紅包是兒子的一點馬力支援，愛妳喔！
             </p>
         </div>
-        <button onclick="App.nextStep(3, '3_5')">辛苦了，乖兒子 ❤️</button>
+        <button onclick="App.nextStep(3, '3_5')">吃到無敵星星了 ❤️</button>
     </div>
 
     <div id="step3_5" class="step">
-        <h2>🧧 財氣匯聚中</h2>
-        <p>媽媽，準備好迎接<br><b style="color:#e63946; font-size: 1.5rem;">蛇年特大紅包</b>了嗎？</p>
-        <button onclick="App.nextStep('3_5', 4)">我準備好了！大獎來！</button>
+        <h2>🏎️ 寶馬引擎預熱中</h2>
+        <p>媽媽，準備好迎接<br><b style="color:#e63946; font-size: 1.5rem;">馬年騰飛大紅包</b>了嗎？</p>
+        <button onclick="App.nextStep('3_5', 4)">彈射起步！GO！</button>
     </div>
 
     <div id="step4" class="step">
-        <h2>🎰 財神來敲門</h2>
-        <p>系統連抽三次取最高值並加碼！</p>
+        <h2>🎰 超級馬力抽獎機</h2>
+        <p>連續加速三次取最高馬力並加碼！</p>
         <div class="slot-machine">
             <div style="display: flex; justify-content: center; gap: 4px; margin-bottom: 15px;">
                 <div class="slot-reel" id="reel0">$</div>
@@ -138,25 +135,25 @@
             </div>
             <div class="history-pills" id="historyPills"></div>
         </div>
-        <button id="drawBtn" onclick="App.draw()">點我抽紅包 (剩 3 次)</button>
+        <button id="drawBtn" onclick="App.draw()">點擊獲得馬力 (剩 3 次)</button>
     </div>
 
     <div id="step5" class="step">
-        <div id="luckyBag" class="lucky-bag">💰</div>
+        <div id="luckyBag" class="lucky-bag">🏎️</div>
         <div id="resultContent" style="display:none;">
-            <div style="font-size: 2rem; color: var(--dark-red); font-weight: 900;">🧧 恭喜媽媽 🧧</div>
-            <p style="margin-top:5px;">您的 2026 蛇年紅包總額：</p>
-            <div id="bonusDisplay" style="display:none; color: var(--pink); font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;">
-                兒子驚喜加碼：+$<span id="bonusValue">0</span>
+            <div style="font-size: 2rem; color: var(--dark-red); font-weight: 900;">🧧 一馬當先 🧧</div>
+            <p style="margin-top:5px;">您的 2026 馬年發財紅包：</p>
+            <div id="bonusDisplay" style="display:none; color: #1e3799; font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;">
+                ✨ 超級馬力加倍：+$<span id="bonusValue">0</span>
             </div>
             <div class="final-amount" id="finalPrize">$0</div>
             <div id="bonusNote" class="bonus-note">
-                ✨ 系統偵測到數字「4」<br>已自動為您升級為「8」發財！ ✨
+                🍄 吃到無敵星星！<br>數字「4」已升級為「8」發財馬！ ✨
             </div>
             <div id="praiseSection">
-                <p style="font-weight: bold; color: #d4a017;">✨ 偷偷告訴妳 ✨</p>
-                <p style="font-size: 0.9rem;">整個程式介面、紅包雨特效、防 4 邏輯，都是妳兒子<b>親手寫的</b>，是不是很厲害！</p>
-                <button class="line-btn" onclick="LineBridge.send()">真的非常厲害！傳給兒子領獎 ❤️</button>
+                <p style="font-weight: bold; color: #d4a017;">✨ 尊榮提示 ✨</p>
+                <p style="font-size: 0.9rem;">這台抽獎寶馬的引擎（代碼）、音效、還有無敵星星防 4 邏輯，都是妳兒子<b>親手打造的</b>，馬力十足吧！</p>
+                <button class="line-btn" onclick="LineBridge.send()">兒子太強了！傳給他領獎 ❤️</button>
             </div>
             <p style="color: #666; font-size: 0.75rem; margin-top: 15px;">[ 請截圖此畫面傳給熊剛 ]</p>
         </div>
@@ -166,8 +163,8 @@
 <script>
     const Config = {
         minBase: 12800, maxBase: 36800,
-        pinkGoldColors: ['#ff69b4', '#ffd700', '#ffffff', '#ff1493', '#ffcc00'],
-        loadingTexts: ["手氣加持中...", "財神點錢中...", "蛇年運勢上升..."]
+        pinkGoldColors: ['#ff69b4', '#ffd700', '#ffffff', '#0097e6', '#e63946'],
+        loadingTexts: ["超級馬力注入中...", "寶馬引擎校對中...", "馬力輸出 200%...", "獲取無敵星星..."]
     };
 
     const AudioManager = {
@@ -180,7 +177,7 @@
         speak(text) { 
             if('speechSynthesis' in window) {
                 const msg = new SpeechSynthesisUtterance(text); 
-                msg.lang = 'zh-TW'; msg.rate = 0.9; 
+                msg.lang = 'zh-TW'; msg.rate = 1.0; 
                 window.speechSynthesis.speak(msg); 
             }
         }
@@ -214,7 +211,7 @@
     const LineBridge = {
         send() {
             const amount = App.state.finalMaxAmount;
-            const msg = `兒子！紅包抽到了 $${amount.toLocaleString()}！\n那個老虎機跟自動把4變8的功能太貼心了！\n你寫程式真的太厲害了，媽媽以你為榮！❤️`;
+            const msg = `兒子！這台寶馬太給力了！紅包抽到了 $${amount.toLocaleString()}！\n你的超級馬力歐特效跟自動變8的功能真的超厲害！\n媽媽超開心，你寫程式的馬力真的世界第一！🚀❤️`;
             window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(msg)}`;
         }
     };
@@ -227,7 +224,7 @@
         },
         checkStep1() { 
             if (document.getElementById('nameInput').value.includes("熊剛")) this.nextStep(1, 2); 
-            else alert("哎呀！輸入「熊剛」試試看，他是最帥的！"); 
+            else alert("嘿！啟動寶馬需要輸入「熊剛」，他是最有馬力的！"); 
         },
         checkStep2() { if (document.getElementById('satisfaction').value !== "") this.nextStep(2, 3); },
         avoidFour(num) { 
@@ -236,7 +233,6 @@
             return num; 
         },
 
-        // --- 華麗升級版抽獎函數 ---
         draw() {
             const btn = document.getElementById('drawBtn'); 
             btn.disabled = true;
@@ -248,7 +244,6 @@
 
             const reels = [1,2,3,4,5].map(i => document.getElementById('reel' + i));
             
-            // 1. 啟動數字瘋狂隨機跳動
             const timers = reels.map((reel, idx) => {
                 reel.classList.add('spinning');
                 return setInterval(() => {
@@ -256,19 +251,16 @@
                 }, 50 + (idx * 20)); 
             });
 
-            // 2. 按鈕文字載入中動畫
             let textIdx = 0;
-            const textInt = setInterval(() => { btn.innerText = Config.loadingTexts[textIdx++ % 3]; }, 400);
+            const textInt = setInterval(() => { btn.innerText = Config.loadingTexts[textIdx++ % Config.loadingTexts.length]; }, 400);
 
-            // 3. 依序定格數字
             reels.forEach((reel, i) => {
                 setTimeout(() => {
-                    clearInterval(timers[i]); // 停止該欄跳動
+                    clearInterval(timers[i]);
                     reel.classList.remove('spinning');
                     reel.innerText = finalDigits[i];
                     AudioManager.play('stopSound');
                     
-                    // 定格震動彈回特效
                     reel.style.transform = 'scale(1.2)';
                     setTimeout(() => reel.style.transform = 'scale(1)', 100);
 
@@ -276,12 +268,12 @@
                         clearInterval(textInt);
                         this.state.scores.push(displayAmount);
                         this.state.count--;
-                        document.getElementById('historyPills').innerHTML = this.state.scores.map(s => `<span class="pill">$${s.toLocaleString()}</span>`).join('');
+                        document.getElementById('historyPills').innerHTML = this.state.scores.map(s => `<span class="pill">動力:$${s.toLocaleString()}</span>`).join('');
                         
                         if (this.state.count > 0) { 
-                            btn.disabled = false; btn.innerText = `再抽一次 (剩 ${this.state.count} 次)`; 
+                            btn.disabled = false; btn.innerText = `再次加速 (剩 ${this.state.count} 次)`; 
                         } else { 
-                            btn.disabled = false; btn.innerText = "查看最終加碼成果"; 
+                            btn.disabled = false; btn.innerText = "查看最終馬力總結"; 
                             btn.classList.add('line-btn'); btn.onclick = () => this.showFinal(); 
                         }
                     }
@@ -302,7 +294,7 @@
                 AudioManager.play('popSound');
                 
                 let basePrize = Math.max(...this.state.scores);
-                const extraGift = Math.floor(Math.random() * 2001) + 3000;
+                const extraGift = Math.floor(Math.random() * 2001) + 5000; // 馬年加碼多一點
                 let total = basePrize + extraGift;
                 
                 this.state.wasModified = false;
@@ -316,7 +308,7 @@
                 Visuals.launchEpicConfetti();
                 
                 setTimeout(() => {
-                    AudioManager.speak(`哇！恭喜媽媽！蛇年行大運，紅包總金額 ${this.state.finalMaxAmount} 元！發財了！`);
+                    AudioManager.speak(`哇！恭喜媽媽！馬力全開，一馬當先！紅包總額 ${this.state.finalMaxAmount} 元！妳就是最尊貴的寶馬主人！`);
                 }, 500);
                 
                 setTimeout(() => {
