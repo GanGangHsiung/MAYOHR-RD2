@@ -32,7 +32,7 @@
         button { background: linear-gradient(to bottom, var(--primary-red), var(--dark-red)); color: white; border: none; padding: 16px 28px; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; box-shadow: 0 6px 20px rgba(155, 34, 38, 0.4); transition: 0.3s; width: 100%; margin-top: 10px; position: relative; overflow: hidden; }
         button:active { transform: scale(0.95); }
 
-        /* --- 優化後的老虎機樣式 --- */
+        /* 老虎機樣式 */
         .slot-machine { background: linear-gradient(145deg, #fff0f5, #fff9f0); border-radius: 20px; padding: 20px 10px; margin: 15px 0; border: 3px double var(--gold); }
         .slot-reel { 
             width: 45px; height: 65px; 
@@ -46,7 +46,6 @@
             overflow: hidden; transition: all 0.1s; 
         }
         
-        /* 旋轉霓虹特效 */
         .spinning { 
             filter: blur(1.5px); transform: scale(1.05); 
             border-color: var(--pink);
@@ -63,13 +62,12 @@
         @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
 
         /* 最終金額特效 */
-       .final-amount { font-size: 3.5rem; color: var(--primary-red); font-weight: 900; text-shadow: 4px 4px 0px var(--gold); background: linear-gradient(90deg, #ffb703, #fff, #ffb703); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: goldShine 3s linear infinite; display: inline-block; margin: 10px 0; }
+        .final-amount { font-size: 3.5rem; color: var(--primary-red); font-weight: 900; text-shadow: 4px 4px 0px var(--gold); background: linear-gradient(90deg, #ffb703, #fff, #ffb703); background-size: 200% auto; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: goldShine 3s linear infinite; display: inline-block; margin: 10px 0; }
         @keyframes goldShine { 0% { background-position: -200%; } 100% { background-position: 200%; } }
 
-        .lucky-bag { font-size: 80px; display: none; margin: 20px auto; animation: shake 0.5s infinite; }
+        .lucky-bag { font-size: 60px; display: none; margin: 20px auto; animation: shake 0.5s infinite; line-height: 1.2; }
         @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(10deg); } 50% { transform: rotate(0deg); } 75% { transform: rotate(-10deg); } 100% { transform: rotate(0deg); } }
 
-        /* 誇獎與按鈕區 */
         #praiseSection { display: none; margin-top: 20px; padding: 15px; background: #fffceb; border-radius: 15px; border: 2px dashed #ffb703; animation: slideUp 0.8s ease; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -165,11 +163,8 @@
 
 <script>
     const Config = {
-<<<<<<< HEAD
-        minBase: 12800, maxBase: 34800,
-=======
-        minBase: 6800, maxBase: 34800,
->>>>>>> 1ee47f1db79eb09137627213f91ef440c1dce84c
+        minBase: 12800, 
+        maxBase: 34800,
         pinkGoldColors: ['#ff69b4', '#ffd700', '#ffffff', '#ff1493', '#ffcc00'],
         loadingTexts: ["手氣加持中...", "財神點錢中...", "馬年財運亨通..."]
     };
@@ -226,7 +221,6 @@
     const App = {
         state: { scores: [], count: 3, finalMaxAmount: 0, wasModified: false },
         
-        // 新增限制函數
         clamp(val, min, max) {
             return Math.min(Math.max(val, min), max);
         },
@@ -302,31 +296,23 @@
             const bag = document.getElementById('luckyBag');
             const content = document.getElementById('resultContent');
             bag.style.display = 'block';
+            bag.innerText = "💰"; // 確保錢袋重設
             AudioManager.play('spinSound');
 
             setTimeout(() => {
-                // 1. 取得三次抽獎中的最高基礎值
                 let basePrize = Math.max(...this.state.scores);
-                
-                // 2. 計算隨機加碼金額 (約 3000 ~ 5000)
                 const extraGift = Math.floor(Math.random() * 2001) + 3000;
-                
-                // 3. 初步合計並避開數字 4
                 let total = basePrize + extraGift;
                 this.state.wasModified = false;
                 let processedTotal = this.avoidFour(total);
                 
-                // --- 檢查是否低於下限 ---
+                // --- 自動重抽邏輯 ---
                 if (processedTotal < 32888) {
-                    // 播放驚訝音效或震動提示 (選用)
-                    AudioManager.speak("哎呀！財氣還不夠，重新匯聚更強的馬年好運！");
-                    
-                    // 顯示自動重抽動畫
-                    bag.innerText = "哎呀！金額太低了，兒子不忍心，請重新抽獎🔄";
-                    bag.style.color = "var(--gold)";
+                    AudioManager.speak("哎呀！財氣還不夠，重新匯聚好運！");
+                    bag.style.fontSize = "20px";
+                    bag.innerText = "金額太低了，兒子加碼重抽中...🔄";
                     
                     setTimeout(() => {
-                        // 重設抽獎狀態
                         this.state.scores = [];
                         this.state.count = 3;
                         document.getElementById('historyPills').innerHTML = '';
@@ -334,20 +320,17 @@
                         document.getElementById('drawBtn').innerText = "點我抽紅包 (剩 3 次)";
                         document.getElementById('drawBtn').onclick = () => this.draw();
                         document.getElementById('drawBtn').classList.remove('line-btn');
-                        
-                        // 跳回 Step 3.5
-                        bag.innerText = "💰"; // 換回錢袋
+                        bag.style.fontSize = "60px";
                         this.nextStep(5, '3_5');
-                    }, 1500);
-                    return; // 中斷後續顯示邏輯
+                    }, 2000);
+                    return;
                 }
 
-                // --- 如果高於下限，正常執行顯示邏輯 ---
+                // --- 成功顯示 ---
                 bag.style.display = 'none';
                 content.style.display = 'block';
                 AudioManager.play('popSound');
                 
-                // 套用上限限制：最高 39888
                 this.state.finalMaxAmount = this.clamp(processedTotal, 32888, 39888);
                 
                 document.getElementById('bonusValue').innerText = extraGift.toLocaleString();
@@ -358,7 +341,7 @@
                 Visuals.launchEpicConfetti();
                 
                 setTimeout(() => {
-                    AudioManager.speak(`哇！恭喜媽媽！馬到成功，紅包總金額 ${this.state.finalMaxAmount} 元！這絕對是上上籤！`);
+                    AudioManager.speak(`哇！恭喜媽媽！紅包總金額 ${this.state.finalMaxAmount} 元！發大財囉！`);
                 }, 500);
                 
                 setTimeout(() => {
