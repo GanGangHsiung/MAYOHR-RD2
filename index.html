@@ -165,7 +165,7 @@
 
 <script>
     const Config = {
-        minBase: 12800, maxBase: 36800,
+        minBase: 6800, maxBase: 34800,
         pinkGoldColors: ['#ff69b4', '#ffd700', '#ffffff', '#ff1493', '#ffcc00'],
         loadingTexts: ["手氣加持中...", "財神點錢中...", "馬年財運亨通..."]
     };
@@ -301,24 +301,49 @@
             AudioManager.play('spinSound');
 
             setTimeout(() => {
+                // 1. 取得三次抽獎中的最高基礎值
+                let basePrize = Math.max(...this.state.scores);
+                
+                // 2. 計算隨機加碼金額 (約 3000 ~ 5000)
+                const extraGift = Math.floor(Math.random() * 2001) + 3000;
+                
+                // 3. 初步合計並避開數字 4
+                let total = basePrize + extraGift;
+                this.state.wasModified = false;
+                let processedTotal = this.avoidFour(total);
+                
+                // --- 檢查是否低於下限 ---
+                if (processedTotal < 32888) {
+                    // 播放驚訝音效或震動提示 (選用)
+                    AudioManager.speak("哎呀！財氣還不夠，重新匯聚更強的馬年好運！");
+                    
+                    // 顯示自動重抽動畫
+                    bag.innerText = "🔄";
+                    bag.style.color = "var(--gold)";
+                    
+                    setTimeout(() => {
+                        // 重設抽獎狀態
+                        this.state.scores = [];
+                        this.state.count = 3;
+                        document.getElementById('historyPills').innerHTML = '';
+                        document.getElementById('drawBtn').disabled = false;
+                        document.getElementById('drawBtn').innerText = "點我抽紅包 (剩 3 次)";
+                        document.getElementById('drawBtn').onclick = () => this.draw();
+                        document.getElementById('drawBtn').classList.remove('line-btn');
+                        
+                        // 跳回 Step 3.5
+                        bag.innerText = "💰"; // 換回錢袋
+                        this.nextStep(5, '3_5');
+                    }, 1500);
+                    return; // 中斷後續顯示邏輯
+                }
+
+                // --- 如果高於下限，正常執行顯示邏輯 ---
                 bag.style.display = 'none';
                 content.style.display = 'block';
                 AudioManager.play('popSound');
                 
-                // 1. 取得三次抽獎中的最高基礎值
-                let basePrize = Math.max(...this.state.scores);
-                
-                // 2. 計算隨機加碼金額
-                const extraGift = Math.floor(Math.random() * 2001) + 3000;
-                
-                // 3. 初步合計
-                let total = basePrize + extraGift;
-                
-                // 4. 執行避開數字 4 的邏輯
-                this.state.wasModified = false;
-                let processedTotal = this.avoidFour(total);
-                
-                // 5. 【核心修改】套用上下限限制：32888 ~ 39888
+                // 套用上限限制：最高 39888
                 this.state.finalMaxAmount = this.clamp(processedTotal, 32888, 39888);
                 
                 document.getElementById('bonusValue').innerText = extraGift.toLocaleString();
@@ -329,7 +354,7 @@
                 Visuals.launchEpicConfetti();
                 
                 setTimeout(() => {
-                    AudioManager.speak(`哇！恭喜媽媽！馬到成功，一馬當先，馬不停蹄！紅包總金額 ${this.state.finalMaxAmount} 元！發財了！`);
+                    AudioManager.speak(`哇！恭喜媽媽！馬到成功，紅包總金額 ${this.state.finalMaxAmount} 元！這絕對是上上籤！`);
                 }, 500);
                 
                 setTimeout(() => {
@@ -338,7 +363,7 @@
                 }, 2500);
             }, 2000);
         },
-
+    
         animateValue(obj, start, end, duration) {
             let startTimestamp = null;
             const step = (timestamp) => {
