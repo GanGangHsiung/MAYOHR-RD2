@@ -3,242 +3,645 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GigSwipe Ultra - High Fidelity Demo</title>
+    <title>GigSwipe | Next Gen Job Matching</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         :root {
-            --primary-pink: #FF4B7D;
-            --gradient-pink: linear-gradient(135deg, #FF4B7D 0%, #FF85A2 100%);
-            --bg-light: #F0F2F5;
-            --card-white: #FFFFFF;
-            --text-main: #1A1A1A;
-            --text-sub: #8E8E93;
-            --shadow-soft: 0 15px 35px rgba(0,0,0,0.05);
-            --shadow-inner: inset 0 2px 4px rgba(255,255,255,0.3);
+            /* C端 (打工族) - 預設 */
+            --primary-color: #FF4B7D;
+            --primary-gradient: linear-gradient(135deg, #FF4B7D, #FF8E53);
+            --bg-color: #F0F2F5;
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --card-shadow: 0 15px 35px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.05);
+            --text-main: #333;
+            --text-sub: #666;
+            --btn-reject: #FF4B4B;
+            --btn-like: #4ECC94;
         }
 
+        /* B端 (老闆模式) 變數覆蓋 */
+        body.mode-boss {
+            --primary-color: #4B79FF;
+            --primary-gradient: linear-gradient(135deg, #4B79FF, #00C6FF);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #1a1a1a;
+            font-family: 'Poppins', 'Noto Sans TC', sans-serif;
+            background-color: #222; /* 桌機背景深色以突顯手機 */
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh;
+            overflow: hidden;
         }
 
-        /* 手機外殼 - 鋼鐵質感 */
-        .phone {
+        /* 手機容器模擬 */
+        #app-frame {
             width: 375px;
-            height: 720px;
-            background: var(--bg-light);
-            border-radius: 50px;
-            border: 9px solid #2a2a2a;
+            height: 660px;
+            background: var(--bg-color);
+            border-radius: 40px;
             position: relative;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.6);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
         }
 
-        /* 頂部狀態列與導航 - 玻璃擬態 */
-        .header-nav {
-            background: rgba(255, 75, 125, 0.9);
-            backdrop-filter: blur(10px);
-            padding: 45px 20px 15px;
+        /* === 1. Splash Screen === */
+        #splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary-gradient);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            transition: opacity 0.5s ease;
+        }
+
+        .logo-pulse {
+            font-size: 80px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* === 2. 導航欄 (Glassmorphism) === */
+        header {
+            position: absolute;
+            top: 0; left: 0; width: 100%;
+            padding: 20px 20px 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: white;
             z-index: 100;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
         }
-        .header-nav h2 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
-        .icon-btn { font-size: 20px; cursor: pointer; opacity: 0.9; }
 
-        /* 角色切換器 - 精緻按鈕組 */
-        .role-switcher {
-            display: flex;
-            background: #E8EBF0;
-            margin: 20px 25px 10px;
+        .toggle-switch {
+            background: #e0e0e0;
             border-radius: 20px;
             padding: 4px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .role-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 16px;
+            display: flex;
             cursor: pointer;
-            font-weight: 700;
-            font-size: 14px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: transparent;
-            color: #8E8E93;
+            position: relative;
+            width: 100px;
+            height: 36px;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1);
         }
-        .role-btn.active.c-active { background: white; color: var(--primary-pink); box-shadow: 0 4px 12px rgba(255, 75, 125, 0.15); }
-        .role-btn.active.b-active { background: white; color: var(--business-blue); box-shadow: 0 4px 12px rgba(75, 121, 255, 0.15); }
 
-        /* 卡片區域 */
-        .content { position: relative; flex: 1; padding: 15px 25px; perspective: 1000px; }
-        
+        .toggle-indicator {
+            position: absolute;
+            top: 4px; left: 4px;
+            width: 46px; height: 28px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        body.mode-boss .toggle-indicator { transform: translateX(46px); }
+
+        .toggle-labels {
+            width: 100%; display: flex; justify-content: space-between;
+            position: relative; z-index: 2; font-size: 12px; font-weight: bold;
+            line-height: 28px; color: #888;
+        }
+        .toggle-labels span { width: 50%; text-align: center; transition: color 0.3s; }
+        .active-label { color: var(--primary-color) !important; }
+
+        /* === 3. 卡片堆疊區域 === */
+        #card-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            padding-top: 80px; /* Header height */
+        }
+
         .card {
             position: absolute;
             width: 325px;
-            height: 450px;
-            background: var(--card-white);
-            border-radius: 35px;
-            box-shadow: var(--shadow-soft);
-            overflow: hidden;
-            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s;
-            border: 1px solid rgba(255,255,255,0.8);
-        }
-        
-        .card img { width: 100%; height: 60%; object-fit: cover; }
-        
-        .card-body { padding: 20px 24px; }
-        .card-body h3 { margin: 0; font-size: 22px; color: var(--text-main); font-weight: 800; }
-        .card-location { font-size: 14px; color: var(--text-sub); margin: 6px 0 15px; display: flex; align-items: center; gap: 4px; }
-        
-        .tags-row { display: flex; gap: 8px; flex-wrap: wrap; }
-        .tag {
-            padding: 6px 14px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
-        .tag-pink { background: #FFF0F5; color: #FF4B7D; }
-        .tag-blue { background: #F0F5FF; color: #4B79FF; }
-
-        /* 底部控制鈕 - 完美圓形與漸層 */
-        .footer-actions {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 25px;
-            padding: 0 0 40px 0;
-        }
-        .action-btn {
-            width: 68px;
-            height: 68px;
-            border-radius: 50%;
-            border: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            height: 480px; /* 約佔螢幕 70% */
             background: white;
+            border-radius: 30px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transform-origin: 50% 100%;
+            transition: transform 0.1s linear; /* JS控制時用linear，放開時用ease */
+            cursor: grab;
         }
-        .action-btn:active { transform: scale(0.9); }
-        .btn-dislike { border: 2px solid #F0F2F5; color: #FF5A5F; font-size: 26px; }
-        .btn-like { background: var(--gradient-pink); color: white; font-size: 28px; box-shadow: 0 10px 25px rgba(255, 75, 125, 0.3); }
-        .btn-info { width: 50px; height: 50px; border: 2px solid #F0F2F5; color: #D1D1D6; }
 
-        /* Splash Screen - 靈魂動畫 */
-        #splash {
-            position: absolute; inset: 0; background: var(--gradient-pink);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 1000; transition: 0.8s cubic-bezier(0.8, 0, 0.2, 1);
+        .card img {
+            width: 100%;
+            height: 65%;
+            object-fit: cover;
+            pointer-events: none;
         }
-        .splash-logo { font-size: 90px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1)); animation: splashPulse 2s infinite; }
-        @keyframes splashPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
-        /* Match Overlay */
-        #matchModal {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.85); 
-            backdrop-filter: blur(8px); display: none; z-index: 500;
-            flex-direction: column; justify-content: center; align-items: center; color: white;
+        .card-info {
+            padding: 20px;
+            height: 35%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
+
+        .card-header h2 { font-size: 22px; color: var(--text-main); margin-bottom: 5px; }
+        .card-header h3 { font-size: 14px; color: var(--text-sub); font-weight: 500; }
+        .card-header .meta { display: flex; gap: 10px; margin-top: 5px; font-size: 13px; color: #888; }
+
+        .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .tag {
+            background: #F0F2F5; color: #555;
+            padding: 4px 10px; border-radius: 12px;
+            font-size: 11px; font-weight: 600;
+        }
+
+        /* 狀態標籤 (LIKE / NOPE) */
+        .status-badge {
+            position: absolute; top: 40px;
+            padding: 5px 20px;
+            border: 4px solid; border-radius: 10px;
+            font-size: 32px; font-weight: 800; text-transform: uppercase;
+            transform: rotate(-15deg); opacity: 0;
+            z-index: 10;
+        }
+        .badge-like { right: 40px; border-color: var(--btn-like); color: var(--btn-like); transform: rotate(15deg); }
+        .badge-nope { left: 40px; border-color: var(--btn-reject); color: var(--btn-reject); }
+
+        /* === 4. 底部控制按鈕 === */
+        .controls {
+            position: absolute; bottom: 30px; width: 100%;
+            display: flex; justify-content: center; gap: 30px;
+            z-index: 100;
+        }
+
+        .btn-round {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: none;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .btn-round:active { transform: scale(0.9); box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+        .btn-nope { color: var(--btn-reject); }
+        .btn-like { color: var(--btn-like); font-size: 28px; }
+        .btn-super { color: var(--primary-color); width: 45px; height: 45px; font-size: 18px; margin-top: 8px; }
+
+        /* === 5. Match Overlay === */
+        #match-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        #match-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .match-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 48px; font-style: italic; font-weight: 900;
+            color: #4ECC94;
+            text-shadow: 0 0 20px rgba(78, 204, 148, 0.6);
+            margin-bottom: 40px; transform: scale(0.5); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #match-overlay.active .match-title { transform: scale(1); }
+
+        .match-avatars { display: flex; gap: 20px; margin-bottom: 50px; }
+        .match-avatar {
+            width: 100px; height: 100px; border-radius: 50%;
+            border: 4px solid white; object-fit: cover;
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+
+        .match-btn {
+            background: var(--primary-gradient);
+            color: white; border: none;
+            padding: 15px 40px; border-radius: 30px;
+            font-size: 16px; font-weight: 600;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            width: 80%; cursor: pointer;
+        }
+
+        /* === 6. Chat Modal === */
+        #chat-modal {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            z-index: 1500;
+            border-radius: 30px 30px 0 0;
+            transition: height 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+            overflow: hidden; box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column;
+        }
+        #chat-modal.open { height: 90%; }
+
+        .chat-header {
+            padding: 20px; border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .chat-body { flex: 1; padding: 20px; overflow-y: auto; background: rgba(255,255,255,0.5); }
+        .message {
+            max-width: 80%; padding: 12px 16px; margin-bottom: 10px; border-radius: 18px; font-size: 14px;
+            animation: slideUp 0.3s ease forwards;
+        }
+        .msg-received { background: white; color: #333; border-bottom-left-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .msg-sent { background: var(--primary-color); color: white; align-self: flex-end; margin-left: auto; border-bottom-right-radius: 4px; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
     </style>
 </head>
 <body>
 
-<div class="phone">
-    <div id="splash" onclick="this.style.transform='translateY(-100%)'">
-        <div class="splash-logo">🔥</div>
-        <div style="color:white; font-size:32px; font-weight:900; margin-top:10px;">GigSwipe</div>
-    </div>
+    <div id="app-frame">
+        <div id="splash-screen">
+            <i class="fas fa-fire logo-pulse"></i>
+            <h1 style="margin-top: 20px; font-size: 28px; letter-spacing: 2px;">GigSwipe</h1>
+        </div>
 
-    <div class="header-nav">
-        <div class="icon-btn">🔥</div>
-        <h2>GigSwipe</h2>
-        <div class="icon-btn">👤</div>
-    </div>
-
-    <div class="role-switcher">
-        <button class="role-btn active c-active" onclick="toggleRole('C', this)">探索職缺</button>
-        <button class="role-btn" onclick="toggleRole('B', this)">找尋夥伴</button>
-    </div>
-
-    <div class="content" id="cardStack">
-        <div class="card" style="z-index: 10;" id="c1">
-            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80">
-            <div class="card-body">
-                <h3>MAYO 鼎恆數位</h3>
-                <div class="card-location">📍 竹北辦公室 | $200/hr</div>
-                <div class="tags-row">
-                    <span class="tag tag-pink">#行政支援</span>
-                    <span class="tag tag-pink">#MAYO</span>
-                    <span class="tag tag-pink">#現領</span>
+        <header>
+            <i class="fas fa-user-circle" style="font-size: 24px; color: var(--text-sub);"></i>
+            <div class="toggle-switch" onclick="toggleMode()">
+                <div class="toggle-indicator"></div>
+                <div class="toggle-labels">
+                    <span id="label-c" class="active-label">找工</span>
+                    <span id="label-b">找人</span>
                 </div>
             </div>
-        </div>
-        <div class="card" style="z-index: 9;" id="c2">
-            <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80">
-            <div class="card-body">
-                <h3>陽光風格咖啡廳</h3>
-                <div class="card-location">📍 中山區 | $190/hr</div>
-                <div class="tags-row">
-                    <span class="tag tag-pink">#清新環境</span>
-                    <span class="tag tag-pink">#手沖教學</span>
-                </div>
+            <i class="fas fa-comment-dots" style="font-size: 24px; color: var(--text-sub);"></i>
+        </header>
+
+        <div id="card-container">
             </div>
+
+        <div class="controls">
+            <button class="btn-round btn-nope" onclick="forceSwipe('left')"><i class="fas fa-times"></i></button>
+            <button class="btn-round btn-super"><i class="fas fa-star"></i></button>
+            <button class="btn-round btn-like" onclick="forceSwipe('right')"><i class="fas fa-heart"></i></button>
+        </div>
+
+        <div id="match-overlay">
+            <div class="match-title">IT'S A MATCH!</div>
+            <div class="match-avatars">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop" class="match-avatar" id="user-avatar">
+                <img src="" class="match-avatar" id="match-avatar">
+            </div>
+            <div style="text-align: center; color: white; margin-bottom: 30px;">
+                你與 <span id="match-name" style="font-weight: bold;"></span> 互相感興趣！
+            </div>
+            <button class="match-btn" onclick="openChat()">傳送訊息</button>
+            <button style="background:none; border:none; color:rgba(255,255,255,0.7); margin-top:15px; cursor:pointer;" onclick="closeMatch()">繼續滑動</button>
+        </div>
+
+        <div id="chat-modal">
+            <div class="chat-header">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <img id="chat-avatar" src="" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                    <h3 id="chat-name" style="font-size:16px;">Name</h3>
+                </div>
+                <i class="fas fa-chevron-down" style="cursor:pointer; color:#666;" onclick="closeChat()"></i>
+            </div>
+            <div class="chat-body" id="chat-body">
+                </div>
         </div>
     </div>
 
-    <div class="footer-actions">
-        <button class="action-btn btn-dislike" onclick="handleSwipe('left')">✕</button>
-        <button class="action-btn btn-like" onclick="handleSwipe('right')">❤</button>
-        <button class="action-btn btn-info" onclick="location.reload()">↺</button>
-    </div>
+    <script>
+        // === Data & Config ===
+        const C_MODE_DATA = [
+            {
+                id: 'job-mayo',
+                name: 'MAYO 鼎恆數位',
+                title: '臨時專案助理',
+                img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&q=80', // Team collaboration
+                price: '$200 / hr',
+                loc: '竹北 · 現場',
+                tags: ['#HRTech', '#行政支援', '#團隊氛圍佳'],
+                isTarget: true
+            },
+            {
+                id: 'job-cafe',
+                name: 'StayReal Café',
+                title: '假日外場人員',
+                img: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?w=500&q=80', // Cafe smiling
+                price: '$190 / hr',
+                loc: '台北 · 中山區',
+                tags: ['#現領', '#排班彈性', '#咖啡香'],
+                isTarget: false
+            },
+            {
+                id: 'job-design',
+                name: 'Ogilvy奧美',
+                title: '初級視覺設計',
+                img: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=500&q=80', // Creative office
+                price: '$220 / hr',
+                loc: '台北 · 信義區',
+                tags: ['#視覺美感', '#廣告狂人', '#實習轉正'],
+                isTarget: false
+            }
+        ];
 
-    <div id="matchModal" onclick="this.style.display='none'">
-        <div style="font-size: 50px;">🎉</div>
-        <h1 style="font-size: 40px; margin: 10px 0;">MATCHED!</h1>
-        <p style="opacity: 0.8;">MAYO 鼎恆數位 也想認識你</p>
-        <div style="margin-top:40px; background:white; color:black; padding:12px 30px; border-radius:30px; font-weight:700;">發送訊息</div>
-    </div>
-</div>
+        const B_MODE_DATA = [
+            {
+                id: 'cand-xiong',
+                name: '熊小剛',
+                title: '交大資工所碩一',
+                img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=80', // Portrait male
+                price: '期望 $250+',
+                loc: '可遠端',
+                tags: ['#Backend', '#Python', '#交大背景'],
+                isTarget: true
+            },
+            {
+                id: 'cand-jimmy',
+                name: 'Jimmy',
+                title: '自由接案設計師',
+                img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80', // Portrait creative
+                price: '按件計酬',
+                loc: '台北',
+                tags: ['#UI/UX', '#Figma', '#設計背景'],
+                isTarget: true
+            },
+             {
+                id: 'cand-sarah',
+                name: 'Sarah',
+                title: '活動企劃',
+                img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80', // Portrait female
+                price: '$200 / hr',
+                loc: '台中',
+                tags: ['#活潑熱情', '#社團經驗'],
+                isTarget: false
+            }
+        ];
 
-<script>
-    let currentCardIndex = 1;
+        let currentMode = 'c'; // 'c' for worker, 'b' for boss
+        let cards = [];
+        let currentCardIndex = 0;
+        let activeData = [];
 
-    function toggleRole(role, btn) {
-        document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active', 'c-active', 'b-active'));
-        btn.classList.add('active', role === 'C' ? 'c-active' : 'b-active');
-        // 切換邏輯可擴充...
-    }
+        // === DOM Elements ===
+        const cardContainer = document.getElementById('card-container');
+        const matchOverlay = document.getElementById('match-overlay');
+        const chatModal = document.getElementById('chat-modal');
+        
+        // === Initialization ===
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('splash-screen').style.opacity = 0;
+                setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 500);
+            }, 2000);
+            
+            initCards(currentMode);
+        };
 
-    function handleSwipe(dir) {
-        const card = document.getElementById('c' + currentCardIndex);
-        if (!card) return;
+        function toggleMode() {
+            const body = document.body;
+            const labelC = document.getElementById('label-c');
+            const labelB = document.getElementById('label-b');
+            
+            if (currentMode === 'c') {
+                currentMode = 'b';
+                body.classList.add('mode-boss');
+                labelC.classList.remove('active-label');
+                labelB.classList.add('active-label');
+            } else {
+                currentMode = 'c';
+                body.classList.remove('mode-boss');
+                labelB.classList.remove('active-label');
+                labelC.classList.add('active-label');
+            }
+            initCards(currentMode);
+        }
 
-        if (dir === 'left') {
-            card.style.transform = 'translateX(-150%) rotate(-20deg)';
-        } else {
-            card.style.transform = 'translateX(150%) rotate(20deg)';
-            if (currentCardIndex === 1) {
-                setTimeout(() => {
-                    document.getElementById('matchModal').style.display = 'flex';
-                }, 300);
+        function initCards(mode) {
+            cardContainer.innerHTML = '';
+            activeData = mode === 'c' ? [...C_MODE_DATA] : [...B_MODE_DATA];
+            
+            activeData.forEach((data, index) => {
+                const card = createCard(data, index);
+                cardContainer.appendChild(card);
+            });
+            
+            // Re-query cards for event listeners
+            cards = document.querySelectorAll('.card');
+            currentCardIndex = cards.length - 1; // Top card is last in DOM
+            
+            if(cards.length > 0) applySwipeLogic(cards[cards.length - 1]);
+        }
+
+        function createCard(data, index) {
+            const el = document.createElement('div');
+            el.className = 'card';
+            el.style.zIndex = index; // Correct stacking
+            el.dataset.id = data.id;
+            el.dataset.target = data.isTarget;
+            
+            // Initial transform for stack effect (slight scale down for lower cards)
+            // But for simplicity in this MVP, we just stack them exactly or let top one move
+            
+            const tagsHtml = data.tags.map(t => `<span class="tag">${t}</span>`).join('');
+            
+            el.innerHTML = `
+                <div class="status-badge badge-like">LIKE</div>
+                <div class="status-badge badge-nope">NOPE</div>
+                <img src="${data.img}" alt="${data.name}">
+                <div class="card-info">
+                    <div class="card-header">
+                        <h2>${data.name}</h2>
+                        <h3>${data.title}</h3>
+                        <div class="meta">
+                            <span><i class="fas fa-money-bill-wave"></i> ${data.price}</span>
+                            <span><i class="fas fa-map-marker-alt"></i> ${data.loc}</span>
+                        </div>
+                    </div>
+                    <div class="tags">${tagsHtml}</div>
+                </div>
+            `;
+            return el;
+        }
+
+        // === Swipe Logic ===
+        function applySwipeLogic(card) {
+            if (!card) return;
+
+            let startX = 0, currentX = 0, isDragging = false;
+            const likeBadge = card.querySelector('.badge-like');
+            const nopeBadge = card.querySelector('.badge-nope');
+
+            const startDrag = (e) => {
+                isDragging = true;
+                startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                card.style.transition = 'none';
+            };
+
+            const moveDrag = (e) => {
+                if (!isDragging) return;
+                e.preventDefault(); // Prevent scrolling on mobile
+                currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                const deltaX = currentX - startX;
+                const rotate = deltaX * 0.05;
+
+                card.style.transform = `translateX(${deltaX}px) rotate(${rotate}deg)`;
+
+                // Opacity of badges
+                const opacity = Math.min(Math.abs(deltaX) / 100, 1);
+                if (deltaX > 0) {
+                    likeBadge.style.opacity = opacity;
+                    nopeBadge.style.opacity = 0;
+                } else {
+                    nopeBadge.style.opacity = opacity;
+                    likeBadge.style.opacity = 0;
+                }
+            };
+
+            const endDrag = (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                const deltaX = currentX - startX;
+                const threshold = 100;
+
+                if (Math.abs(deltaX) > threshold) {
+                    // Swipe triggers
+                    const dir = deltaX > 0 ? 1 : -1; // 1 = right, -1 = left
+                    const endX = dir * window.innerWidth;
+                    card.style.transition = 'transform 0.4s ease-in';
+                    card.style.transform = `translateX(${endX}px) rotate(${dir * 30}deg)`;
+                    
+                    setTimeout(() => {
+                        card.remove();
+                        handleSwipeResult(card, dir === 1);
+                        
+                        // Setup next card
+                        currentCardIndex--;
+                        if (currentCardIndex >= 0) {
+                            applySwipeLogic(cards[currentCardIndex]);
+                        }
+                    }, 300);
+                } else {
+                    // Reset
+                    card.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                    card.style.transform = 'translateX(0) rotate(0)';
+                    likeBadge.style.opacity = 0;
+                    nopeBadge.style.opacity = 0;
+                }
+            };
+
+            // Touch events
+            card.addEventListener('touchstart', startDrag);
+            card.addEventListener('touchmove', moveDrag);
+            card.addEventListener('touchend', endDrag);
+
+            // Mouse events (for desktop debugging)
+            card.addEventListener('mousedown', startDrag);
+            window.addEventListener('mousemove', moveDrag); // attach to window to keep dragging if mouse leaves card
+            window.addEventListener('mouseup', endDrag);
+        }
+
+        // === Button Controls ===
+        window.forceSwipe = (direction) => {
+            const card = cards[currentCardIndex];
+            if (!card) return;
+
+            const dir = direction === 'right' ? 1 : -1;
+            const endX = dir * window.innerWidth;
+            
+            // Show badge temporarily
+            const badge = card.querySelector(direction === 'right' ? '.badge-like' : '.badge-nope');
+            badge.style.opacity = 1;
+
+            card.style.transition = 'transform 0.5s ease-in';
+            card.style.transform = `translateX(${endX}px) rotate(${dir * 30}deg)`;
+
+            setTimeout(() => {
+                card.remove();
+                handleSwipeResult(card, direction === 'right');
+                currentCardIndex--;
+                if (currentCardIndex >= 0) applySwipeLogic(cards[currentCardIndex]);
+            }, 300);
+        };
+
+        // === Logic Handling ===
+        function handleSwipeResult(card, isLike) {
+            if (isLike) {
+                const isTarget = card.dataset.target === 'true';
+                if (isTarget) {
+                    triggerMatch(card);
+                }
             }
         }
-        card.style.opacity = '0';
-        currentCardIndex++;
-    }
-</script>
 
+        function triggerMatch(card) {
+            const data = activeData.find(d => d.id === card.dataset.id);
+            document.getElementById('match-name').innerText = data.name;
+            document.getElementById('match-avatar').src = data.img;
+            
+            // Wait slightly for animation
+            setTimeout(() => {
+                matchOverlay.classList.add('active');
+            }, 200);
+        }
+
+        window.closeMatch = () => {
+            matchOverlay.classList.remove('active');
+        };
+
+        // === Chat System ===
+        window.openChat = () => {
+            closeMatch();
+            const matchName = document.getElementById('match-name').innerText;
+            const matchImg = document.getElementById('match-avatar').src;
+            
+            document.getElementById('chat-name').innerText = matchName;
+            document.getElementById('chat-avatar').src = matchImg;
+            
+            const chatBody = document.getElementById('chat-body');
+            chatBody.innerHTML = ''; // Clear old chat
+
+            chatModal.classList.add('open');
+            
+            // Simulated conversation
+            simulateMessage(chatBody, `嗨！我是 ${matchName} 的招募負責人。`, 500);
+            simulateMessage(chatBody, `我們對你的經歷很有興趣，想問這週有空聊聊嗎？`, 1500);
+        };
+
+        window.closeChat = () => {
+            chatModal.classList.remove('open');
+        };
+
+        function simulateMessage(container, text, delay) {
+            setTimeout(() => {
+                const div = document.createElement('div');
+                div.className = 'message msg-received';
+                div.innerText = text;
+                container.appendChild(div);
+                container.scrollTop = container.scrollHeight;
+            }, delay);
+        }
+
+    </script>
 </body>
 </html>
