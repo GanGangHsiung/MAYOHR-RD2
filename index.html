@@ -63,7 +63,7 @@
         @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
 
         /* 最終金額特效 */
-        .final-amount { font-size: 3.5rem; color: var(--primary-red); font-weight: 900; text-shadow: 4px 4px 0px var(--gold); background: linear-gradient(90deg, #ffb703, #fff, #ffb703); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: goldShine 3s linear infinite; display: inline-block; margin: 10px 0; }
+        background-clip: text;.final-amount { font-size: 3.5rem; color: var(--primary-red); font-weight: 900; text-shadow: 4px 4px 0px var(--gold); background: linear-gradient(90deg, #ffb703, #fff, #ffb703); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: goldShine 3s linear infinite; display: inline-block; margin: 10px 0; }
         @keyframes goldShine { 0% { background-position: -200%; } 100% { background-position: 200%; } }
 
         .lucky-bag { font-size: 80px; display: none; margin: 20px auto; animation: shake 0.5s infinite; }
@@ -165,7 +165,11 @@
 
 <script>
     const Config = {
+<<<<<<< HEAD
+        minBase: 12800, maxBase: 34800,
+=======
         minBase: 6800, maxBase: 34800,
+>>>>>>> 1ee47f1db79eb09137627213f91ef440c1dce84c
         pinkGoldColors: ['#ff69b4', '#ffd700', '#ffffff', '#ff1493', '#ffcc00'],
         loadingTexts: ["手氣加持中...", "財神點錢中...", "馬年財運亨通..."]
     };
