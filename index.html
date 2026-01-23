@@ -40,12 +40,18 @@
         .char {
             display: inline-block;
             opacity: 0;
-            transform: translateY(120px) scale(0) rotate(-10deg);
-            animation: charBounce 0.7s forwards cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            background: linear-gradient(180deg, #ff758c 0%, #ff7eb3 50%, #d4418e 100%);
+            /* 1. 減少初始位移幅度，避免渲染破碎 */
+            transform: translateY(30px) scale(0.8); 
+            animation: charBounce 0.7s forwards cubic-bezier(0.22, 1, 0.36, 1);
+    
+                               /* 2. 移除會導致格狀破碎的描邊 (stroke) */
+            -webkit-text-stroke: 0px; 
+
+                          /* 3. 優化漸層顏色，確保在背景裁切時平滑 */
+            color: var(--dark-red); 
+            background: linear-gradient(180deg, #ff758c 0%, #d4418e 100%);
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+            background-clip: text; /* 加上這一行以解決 VS Code 提示的相容性問題 */
         }
         @keyframes charBounce { 
             0% { opacity: 0; transform: translateY(120px) scale(0) rotate(-20deg); }
