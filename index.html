@@ -224,7 +224,7 @@
 <script>
     /* === 邏輯完全保留自熊剛版 === */
     const Config = {
-        minBase: 1888, maxBase: 12888,
+        minBase: 6888, maxBase: 12888,
         pinkGoldColors: ['#ff758c', '#ffafbd', '#ffffff', '#ff7eb3', '#fff9c4'],
         loadingTexts: ["愛心傳送中...", "好運裝填中...", "驚喜準備中..."]
     };
@@ -378,11 +378,11 @@
             AudioManager.play('spinSound');
             setTimeout(() => {
                 let basePrize = Math.max(...this.state.scores);
-                const extraGift = Math.floor(Math.random() * 4001) ;
+                const extraGift = Math.floor(Math.random() * 2001) + 2000 ;
                 let total = basePrize + extraGift;
                 this.state.wasModified = false;
                 let processedTotal = this.avoidFour(total);
-                if (processedTotal < 3688) {
+                if (processedTotal < 9688) {
                     AudioManager.speak("哎呀！財氣還不夠，Zoe 幫您重新匯聚好運！");
                     bag.style.fontSize = "20px"; bag.innerText = "金額太低了，寶貝加碼重抽中...🔄";
                     setTimeout(() => {
@@ -398,7 +398,7 @@
                 }
                 bag.style.display = 'none'; content.style.display = 'block';
                 AudioManager.play('popSound');
-                this.state.finalMaxAmount = this.clamp(processedTotal, 3688, 16888);
+                this.state.finalMaxAmount = this.clamp(processedTotal, 9688, 16888);
                 document.getElementById('bonusValue').innerText = extraGift.toLocaleString();
                 document.getElementById('bonusDisplay').style.display = 'block';
                 if (this.state.wasModified) document.getElementById('bonusNote').style.display = 'block';
