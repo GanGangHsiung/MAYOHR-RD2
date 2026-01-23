@@ -7,132 +7,80 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        /* === 視覺換裝：粉嫩馬卡龍色系 === */
+        /* === 視覺風格：Zoe 專屬粉嫩馬卡龍 === */
         :root { 
-            --primary-red: #ff758c; /* 蜜桃粉 */
-            --gold: #ffb703; 
-            --pink: #ffafbd; /* 櫻花粉 */
-            --dark-red: #d4418e; /* 深玫瑰粉 */
-            --shiny-gold: #fff9c4; 
+            --primary-red: #ff758c; 
+            --pink: #ffafbd; 
+            --dark-red: #d4418e; 
             --bg-gradient: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%); 
         }
         
         body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg-gradient); height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; }
         
-        /* === 開場動畫：粉色夢幻風格 === */
         #splash-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle, #ffdee9 0%, #b5fffc 100%);
-            z-index: 9999;
-            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; display: flex; justify-content: center; align-items: center;
             transition: opacity 1s ease-out, visibility 1s;
         }
-        .splash-content { text-align: center; padding: 20px; width: 100%; }
-        .splash-text {
-            color: var(--dark-red);
-            font-size: 3.5rem;
-            font-weight: 900;
-            line-height: 1.3;
-            letter-spacing: 2px;
-            filter: drop-shadow(0 0 15px rgba(255, 117, 140, 0.4));
-        }
+        .splash-text { color: var(--dark-red); font-size: 3.5rem; font-weight: 900; text-align: center; }
         .char {
-            display: inline-block;
-            opacity: 0;
-            transform: translateY(120px) scale(0) rotate(-10deg);
+            display: inline-block; opacity: 0; transform: translateY(120px) scale(0);
             animation: charBounce 0.7s forwards cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            background: linear-gradient(180deg, #ff758c 0%, #ff7eb3 50%, #d4418e 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+            background: linear-gradient(180deg, #ff758c 0%, #d4418e 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        @keyframes charBounce { 
-            0% { opacity: 0; transform: translateY(120px) scale(0) rotate(-20deg); }
-            70% { opacity: 1; transform: translateY(-20px) scale(1.1) rotate(5deg); }
-            100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); } 
-        }
+        @keyframes charBounce { to { opacity: 1; transform: translateY(0) scale(1); } }
 
-        @media (max-width: 480px) { .splash-text { font-size: 2.2rem; line-height: 1.5; } }
-
-        /* 特效：愛心雨 */
         .red-packet { position: absolute; font-size: 25px; top: -50px; z-index: 1; opacity: 0.8; pointer-events: none; animation: fall linear infinite; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
 
-        /* 主容器：圓潤白潤質感 */
         .container { 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(15px); 
-            padding: 2rem; border-radius: 40px; 
-            box-shadow: 0 25px 50px rgba(255, 117, 140, 0.25); 
-            width: 90%; max-width: 420px; text-align: center; 
-            border: 6px solid white; position: relative; z-index: 10; 
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); 
+            padding: 2rem; border-radius: 40px; box-shadow: 0 25px 50px rgba(255, 117, 140, 0.25); 
+            width: 90%; max-width: 420px; text-align: center; border: 6px solid white; position: relative; z-index: 10; 
         }
         
-        .step { display: none; animation: fadeIn 0.6s cubic-bezier(0.39, 0.575, 0.565, 1); }
+        .step { display: none; animation: fadeIn 0.6s ease; }
         .step.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
-        h2 { color: var(--dark-red); margin-bottom: 1rem; font-size: 1.8rem; font-weight: 900; }
-        p { color: #555; line-height: 1.6; }
-        
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #fce4ec; border-radius: 20px; font-size: 1rem; outline: none; box-sizing: border-box; }
-        input:focus, select:focus { border-color: var(--pink); }
+        h2 { color: var(--dark-red); font-weight: 900; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #fce4ec; border-radius: 20px; outline: none; }
 
         button { 
-            background: linear-gradient(to right, #ff758c, #ff7eb3); 
-            color: white; border: none; padding: 16px 28px; border-radius: 50px; 
-            font-size: 1.2rem; font-weight: bold; cursor: pointer; 
-            box-shadow: 0 6px 20px rgba(255, 117, 140, 0.4); 
-            transition: 0.3s; width: 100%; margin-top: 10px; position: relative; overflow: hidden; 
+            background: linear-gradient(to right, #ff758c, #ff7eb3); color: white; border: none; 
+            padding: 16px 28px; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; 
+            box-shadow: 0 6px 20px rgba(255, 117, 140, 0.4); transition: 0.3s; width: 100%; margin-top: 10px; 
         }
         button:active { transform: scale(0.95); }
 
-        /* 老虎機：粉色甜蜜版 */
-        .slot-machine { background: linear-gradient(145deg, #fff0f5, #fff9f0); border-radius: 30px; padding: 20px 10px; margin: 15px 0; border: 3px dashed var(--pink); }
+        .slot-machine { background: #fff5f7; border-radius: 30px; padding: 20px 10px; margin: 15px 0; border: 3px dashed var(--pink); }
         .slot-reel { 
-            width: 45px; height: 65px; 
-            background: white; 
-            border: 3px solid var(--pink); 
-            border-radius: 15px; 
-            font-size: 2.8rem; font-weight: 900; color: var(--dark-red); 
-            display: flex; justify-content: center; align-items: center; 
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.05), 0 4px 10px rgba(255, 117, 140, 0.2);
-            overflow: hidden; transition: all 0.1s; 
+            width: 45px; height: 65px; background: white; border: 3px solid var(--pink); 
+            border-radius: 15px; font-size: 2.2rem; font-weight: 900; color: var(--dark-red); 
+            display: flex; justify-content: center; align-items: center; overflow: hidden; 
         }
-        
-        .spinning { 
-            filter: blur(1.5px); transform: scale(1.05); 
-            border-color: #ff7eb3;
-            background: linear-gradient(180deg, #fff0f3 0%, #ffffff 50%, #fff0f3 100%);
-            animation: pulseBorder 0.2s infinite alternate;
-        }
+        .spinning { filter: blur(1.5px); animation: pulseBorder 0.2s infinite alternate; }
         @keyframes pulseBorder { from { box-shadow: 0 0 5px var(--pink); } to { box-shadow: 0 0 15px #ff7eb3; } }
 
         .history-pills { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 10px;}
-        .pill { background: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; color: var(--dark-red); border: 1px solid var(--pink); font-weight: bold; animation: popIn 0.3s ease; }
+        .pill { background: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; color: var(--dark-red); border: 1px solid var(--pink); font-weight: bold; }
 
-        /* 最終金額特效 */
-        .final-amount { font-size: 3.5rem; color: var(--dark-red); font-weight: 900; text-shadow: 3px 3px 0px var(--pink); background: linear-gradient(90deg, #ff758c, #fff, #ff758c); background-size: 200% auto; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: goldShine 3s linear infinite; display: inline-block; margin: 10px 0; }
+        .final-amount { font-size: 3.5rem; color: var(--dark-red); font-weight: 900; background: linear-gradient(90deg, #ff758c, #d4418e, #ff758c); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: goldShine 3s linear infinite; }
         @keyframes goldShine { 0% { background-position: -200%; } 100% { background-position: 200%; } }
 
-        .lucky-bag { font-size: 60px; display: none; margin: 20px auto; animation: shake 0.5s infinite; line-height: 1.2; }
-        @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(10deg); } 50% { transform: rotate(0deg); } 75% { transform: rotate(-10deg); } 100% { transform: rotate(0deg); } }
+        .lucky-bag { font-size: 60px; display: none; margin: 20px auto; animation: shake 0.5s infinite; }
+        @keyframes shake { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(10deg); } 75% { transform: rotate(-10deg); } }
 
-        #praiseSection { display: none; margin-top: 20px; padding: 15px; background: #fff5f7; border-radius: 20px; border: 2px dashed var(--pink); animation: slideUp 0.8s ease; }
-        .line-btn { background: linear-gradient(135deg, #06c755 0%, #009900 100%); animation: pulse-line 2s infinite; box-shadow: 0 5px 15px rgba(6, 199, 85, 0.4); }
-        
-        .bonus-note { background: #fff0f3; color: #d4418e; font-weight: bold; padding: 8px; border-radius: 8px; border: 1px solid var(--pink); display: none; font-size: 0.9rem; margin: 10px 0; animation: blink 2s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        #praiseSection { display: none; margin-top: 20px; padding: 15px; background: #fff5f7; border-radius: 20px; border: 2px dashed var(--pink); }
+        .line-btn { background: linear-gradient(135deg, #06c755 0%, #009900 100%); }
+        .bonus-note { background: #fff0f3; color: #d4418e; font-weight: bold; padding: 8px; border-radius: 8px; border: 1px solid var(--pink); display: none; font-size: 0.9rem; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div id="splash-screen">
-    <div class="splash-content">
-        <div class="splash-text" id="splash-title"></div>
-    </div>
-</div>
+<div id="splash-screen"><div class="splash-content"><div class="splash-text" id="splash-title"></div></div></div>
 
 <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
 <audio id="spinSound" src="https://assets.mixkit.co/active_storage/sfx/2016/2016-preview.mp3"></audio>
@@ -164,7 +112,7 @@
         <div style="text-align: left; background: #fff0f3; padding: 15px; border-radius: 20px; border-left: 5px solid var(--primary-red);">
             <p style="margin: 0; font-size: 0.95rem; color: #d4418e;">
                 親愛的爹爹娘親，謝謝您們一直把 Zoe 當成小公主疼愛！<br><br>
-                新的一年，我不只要當您們的驕傲，更要當您們的開心果。<b>這份紅包裡裝滿了我的撒嬌跟愛心，要開心收下喔！</b>
+                這份紅包裡裝滿了我的撒嬌跟愛心，要開心收下喔！
             </p>
         </div>
         <button onclick="App.nextStep(3, '3_5')">謝謝最可愛的 Zoe ❤️</button>
@@ -197,17 +145,14 @@
         <div id="luckyBag" class="lucky-bag">🎁</div>
         <div id="resultContent" style="display:none;">
             <div style="font-size: 2rem; color: var(--dark-red); font-weight: 900;">🌸 恭喜爹娘 🌸</div>
-            <p style="margin-top:5px;">您的 2026 甜蜜紅包總額：</p>
-            <div id="bonusDisplay" style="display:none; color: #ff7eb3; font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;">
+            <div id="bonusDisplay" style="display:none; color: #ff7eb3; font-weight: bold; margin-top: 10px;">
                 Zoe 驚喜加碼：+$<span id="bonusValue">0</span>
             </div>
             <div class="final-amount" id="finalPrize">$0</div>
-            <div id="bonusNote" class="bonus-note">
-                ✨ 系統偵測到數字「4」<br>已自動為您升級為「8」發財！ ✨
-            </div>
+            <div id="bonusNote" class="bonus-note">✨ 偵測到數字「4」已升級為「8」發財！ ✨</div>
             <div id="praiseSection">
                 <p style="font-weight: bold; color: #ff758c;">✨ 女兒的心意 ✨</p>
-                <p style="font-size: 0.9rem;">整個程式介面與抽獎功能，都是女兒 <b>Zoe 委託Jimmy設計</b> 的喔，是不是很有眼光！</p>
+                <p style="font-size: 0.9rem;">整個程式介面與功能，都是女兒 <b>Zoe 委託 Jimmy 專屬設計</b> 的喔！</p>
                 <button class="line-btn" onclick="LineBridge.send()">女兒最棒了！領取驚喜 ❤️</button>
             </div>
             <p style="color: #888; font-size: 0.75rem; margin-top: 15px;">[ 請截圖此畫面傳給 Zoe ]</p>
@@ -216,33 +161,21 @@
 </div>
 
 <script>
-    /* === 邏輯完全保留自熊剛版 === */
     const Config = {
-        minBase: 22800, maxBase: 33888,
-        pinkGoldColors: ['#ff758c', '#ffafbd', '#ffffff', '#ff7eb3', '#fff9c4'],
-        loadingTexts: ["愛心傳送中...", "好運裝填中...", "驚喜準備中..."]
+        minBase: 1600, maxBase: 6666, // 基礎隨機區間
+        reboundMin: 3888, // 低於此數值會重抽
+        pinkGoldColors: ['#ff758c', '#ffafbd', '#ffffff', '#ff7eb3', '#fff9c4']
     };
 
     const AudioManager = {
         play(id) { const el = document.getElementById(id); if (el) { el.currentTime = 0; el.play().catch(e=>{}); } },
-        init() { 
-            ['clickSound', 'spinSound', 'stopSound', 'popSound'].forEach(id => { 
-                const a = document.getElementById(id); if(a){ a.muted = true; a.play().then(()=>{ a.muted=false; a.pause(); }).catch(e=>{}); } 
-            }); 
-            if('speechSynthesis' in window) { window.speechSynthesis.speak(new SpeechSynthesisUtterance('')); }
-        },
-        speak(text) { 
-            if('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); 
-                const msg = new SpeechSynthesisUtterance(text); msg.lang = 'zh-TW'; 
-                window.speechSynthesis.speak(msg); 
-            }
-        }
+        init() { ['clickSound', 'spinSound', 'stopSound', 'popSound'].forEach(id => { const a = document.getElementById(id); if(a){ a.muted = true; a.play().then(()=>{ a.muted=false; a.pause(); }).catch(e=>{}); } }); },
+        speak(text) { if('speechSynthesis' in window) { window.speechSynthesis.cancel(); const msg = new SpeechSynthesisUtterance(text); msg.lang = 'zh-TW'; window.speechSynthesis.speak(msg); } }
     };
 
     const Visuals = {
         createRain() {
-            const emojis = ["💖", "🌸", "✨", "🎀", "🍭"];
+            const emojis = ["💖", "🌸", "✨", "🎀"];
             const rp = document.createElement('div'); rp.className = 'red-packet';
             rp.innerText = emojis[Math.floor(Math.random() * emojis.length)];
             rp.style.left = Math.random() * 100 + 'vw';
@@ -250,77 +183,40 @@
             document.body.appendChild(rp); setTimeout(() => rp.remove(), 5000);
         },
         launchEpicConfetti() {
-            const duration = 3000; const end = Date.now() + duration;
-            (function frame() {
-                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: Config.pinkGoldColors });
-                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: Config.pinkGoldColors });
-                if (Date.now() < end) requestAnimationFrame(frame);
-            }());
-        },
-        clickBurst(x, y) {
-            confetti({ particleCount: 30, spread: 60, origin: { x: x/window.innerWidth, y: y/window.innerHeight }, colors: Config.pinkGoldColors, gravity: 0.5, ticks: 100 });
-        },
-        launchGoldTransition() {
-            const end = Date.now() + 1500;
-            (function frame() {
-                confetti({
-                    particleCount: 10, angle: Math.random() * 360, spread: 70,
-                    origin: { x: Math.random(), y: Math.random() - 0.2 },
-                    colors: ['#ff758c', '#fff9c4', '#ffafbd'], ticks: 200, gravity: 1.2, shapes: ['circle'], scalar: 2 
-                });
-                if (Date.now() < end) requestAnimationFrame(frame);
-            }());
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: Config.pinkGoldColors });
         }
     };
 
+    // 初始化開場
     window.addEventListener('DOMContentLoaded', () => {
-        const titleText = "2026 甜蜜馬年\n歡迎來到 Zoe 的\n新年紅包抽獎系統";
+        const titleText = "2026 甜蜜馬年\nZoe 的紅包系統";
         const container = document.getElementById('splash-title');
         titleText.split("").forEach((char, i) => {
-            const span = document.createElement('span');
-            span.className = 'char';
+            const span = document.createElement('span'); span.className = 'char';
             if (char === "\n") container.appendChild(document.createElement('br'));
-            else {
-                span.innerText = char;
-                span.style.animationDelay = `${i * 0.15}s`;
-                container.appendChild(span);
-            }
+            else { span.innerText = char; span.style.animationDelay = `${i * 0.1}s`; container.appendChild(span); }
         });
         setTimeout(() => {
-            Visuals.launchGoldTransition();
-            const splash = document.getElementById('splash-screen');
-            splash.style.opacity = '0';
-            setTimeout(() => {
-                splash.style.visibility = 'hidden';
-                AudioManager.speak("歡迎爹爹娘親！祝您二位新年快樂，快來領取我的甜蜜愛心吧！");
-            }, 1000);
-        }, titleText.length * 150 + 2000);
+            document.getElementById('splash-screen').style.opacity = '0';
+            setTimeout(() => { document.getElementById('splash-screen').style.visibility = 'hidden'; }, 1000);
+        }, 3000);
     });
-
-    document.addEventListener('click', (e) => {
-        AudioManager.play('clickSound');
-        if(e.target.tagName !== 'BUTTON') Visuals.clickBurst(e.clientX, e.clientY);
-    }, {passive: true});
 
     const LineBridge = {
         send() {
             const amount = App.state.finalMaxAmount;
-            const msg = `Zoe 寶貝，新年快樂!妳做的紅包系統太美了！\n我抽到了 $${amount.toLocaleString()}！\n不愧是我們最可愛的女兒，爸爸媽媽愛妳！❤️`;
+            const msg = `Zoe 寶貝，新年快樂！抽到了 $${amount.toLocaleString()}！女兒委託 Jimmy 做的小程式太貼心了，爸爸媽媽愛妳！❤️`;
             window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(msg)}`;
         }
     };
 
     const App = {
         state: { scores: [], count: 3, finalMaxAmount: 0, wasModified: false },
-        clamp(val, min, max) { return Math.min(Math.max(val, min), max); },
         nextStep(current, next) {
             document.getElementById('step' + current).classList.remove('active');
             document.getElementById('step' + next).classList.add('active');
         },
-        checkStep1() { 
-            if (document.getElementById('nameInput').value.toLowerCase().includes("zoe")) this.nextStep(1, 2); 
-            else alert("哎呀！輸入「Zoe」試試看，她是最好的女兒！"); 
-        },
+        checkStep1() { if (document.getElementById('nameInput').value.toLowerCase().includes("zoe")) this.nextStep(1, 2); else alert("輸入「Zoe」試試看！"); },
         checkStep2() { if (document.getElementById('satisfaction').value !== "") this.nextStep(2, 3); },
         avoidFour(num) { 
             let str = num.toString(); 
@@ -328,8 +224,7 @@
             return num; 
         },
         draw() {
-            const btn = document.getElementById('drawBtn'); 
-            btn.disabled = true;
+            const btn = document.getElementById('drawBtn'); btn.disabled = true;
             AudioManager.play('spinSound');
             let rawAmount = Math.floor(Math.random() * (Config.maxBase - Config.minBase + 1) + Config.minBase);
             let displayAmount = this.avoidFour(rawAmount);
@@ -339,67 +234,53 @@
                 reel.classList.add('spinning');
                 return setInterval(() => { reel.innerText = Math.floor(Math.random() * 10); }, 50 + (idx * 20)); 
             });
-            let textIdx = 0;
-            const textInt = setInterval(() => { btn.innerText = Config.loadingTexts[textIdx++ % 3]; }, 400);
             reels.forEach((reel, i) => {
                 setTimeout(() => {
-                    clearInterval(timers[i]);
-                    reel.classList.remove('spinning');
-                    reel.innerText = finalDigits[i];
-                    AudioManager.play('stopSound');
-                    reel.style.transform = 'scale(1.2)';
-                    setTimeout(() => reel.style.transform = 'scale(1)', 100);
+                    clearInterval(timers[i]); reel.classList.remove('spinning');
+                    reel.innerText = finalDigits[i]; AudioManager.play('stopSound');
                     if (i === 4) {
-                        clearInterval(textInt);
-                        this.state.scores.push(displayAmount);
-                        this.state.count--;
+                        this.state.scores.push(displayAmount); this.state.count--;
                         document.getElementById('historyPills').innerHTML = this.state.scores.map(s => `<span class="pill">$${s.toLocaleString()}</span>`).join('');
-                        if (this.state.count > 0) { 
-                            btn.disabled = false; btn.innerText = `再抽一次 (剩 ${this.state.count} 次)`; 
-                        } else { 
-                            btn.disabled = false; btn.innerText = "查看最終加碼成果"; 
-                            btn.classList.add('line-btn'); btn.onclick = () => { AudioManager.init(); this.showFinal(); }; 
-                        }
+                        if (this.state.count > 0) { btn.disabled = false; btn.innerText = `再抽一次 (剩 ${this.state.count} 次)`; }
+                        else { btn.disabled = false; btn.innerText = "查看最終加碼成果"; btn.onclick = () => this.showFinal(); }
                     }
-                }, 1200 + (i * 500)); 
+                }, 1000 + (i * 400)); 
             });
         },
         showFinal() {
             this.nextStep(4, 5);
             const bag = document.getElementById('luckyBag');
-            const content = document.getElementById('resultContent');
             bag.style.display = 'block';
-            AudioManager.play('spinSound');
             setTimeout(() => {
                 let basePrize = Math.max(...this.state.scores);
-                const extraGift = Math.floor(Math.random() * 2001) + 4000;
+                const extraGift = Math.floor(Math.random() * 2001) + 1000; // 加碼 1000-3000
                 let total = basePrize + extraGift;
                 this.state.wasModified = false;
                 let processedTotal = this.avoidFour(total);
-                if (processedTotal < 32888) {
-                    AudioManager.speak("哎呀！財氣還不夠，Zoe 幫您重新匯聚好運！");
-                    bag.style.fontSize = "20px"; bag.innerText = "金額太低了，寶貝加碼重抽中...🔄";
-                    setTimeout(() => {
-                        this.state.scores = []; this.state.count = 3;
+
+                // 檢查是否太低需要重灌
+                if (processedTotal < Config.reboundMin) {
+                    bag.innerText = "金額太低，Zoe 加碼重抽中...🔄";
+                    setTimeout(() => { 
+                        this.state.scores = []; this.state.count = 3; 
                         document.getElementById('historyPills').innerHTML = '';
-                        document.getElementById('drawBtn').disabled = false;
-                        document.getElementById('drawBtn').innerText = "抽甜蜜紅包 (剩 3 次)";
                         document.getElementById('drawBtn').onclick = () => this.draw();
-                        document.getElementById('drawBtn').classList.remove('line-btn');
-                        bag.style.fontSize = "60px"; this.nextStep(5, '3_5');
+                        this.nextStep(5, 4); bag.innerText = "🎁";
                     }, 2000);
                     return;
                 }
-                bag.style.display = 'none'; content.style.display = 'block';
-                AudioManager.play('popSound');
-                this.state.finalMaxAmount = this.clamp(processedTotal, 32888, 39888);
+
+                bag.style.display = 'none';
+                document.getElementById('resultContent').style.display = 'block';
+                this.state.finalMaxAmount = processedTotal;
                 document.getElementById('bonusValue').innerText = extraGift.toLocaleString();
                 document.getElementById('bonusDisplay').style.display = 'block';
                 if (this.state.wasModified) document.getElementById('bonusNote').style.display = 'block';
-                this.animateValue(document.getElementById('finalPrize'), 0, this.state.finalMaxAmount, 2000);
+                
+                this.animateValue(document.getElementById('finalPrize'), 0, processedTotal, 2000);
                 Visuals.launchEpicConfetti();
-                setTimeout(() => { AudioManager.speak(`哇！恭喜爹爹娘娘！紅包總金額 ${this.state.finalMaxAmount} 元！Zoe 愛您們唷！`); }, 500);
-                setTimeout(() => { document.getElementById('praiseSection').style.display = 'block'; document.getElementById('praiseSection').scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 2500);
+                AudioManager.speak(`恭喜爹爹娘親！紅包總額 ${processedTotal} 元！`);
+                setTimeout(() => { document.getElementById('praiseSection').style.display = 'block'; }, 2500);
             }, 2000);
         },
         animateValue(obj, start, end, duration) {
@@ -407,16 +288,14 @@
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const ease = 1 - Math.pow(1 - progress, 4); 
-                const currentVal = Math.floor(ease * (end - start) + start);
-                obj.innerHTML = "$" + currentVal.toLocaleString();
+                obj.innerHTML = "$" + Math.floor(progress * (end - start) + start).toLocaleString();
                 if (progress < 1) window.requestAnimationFrame(step);
             };
             window.requestAnimationFrame(step);
         }
     };
-    setInterval(Visuals.createRain, 400);
-    document.body.addEventListener('click', AudioManager.init, {once:true});
+    setInterval(Visuals.createRain, 500);
+    document.body.addEventListener('click', () => AudioManager.init(), {once:true});
 </script>
 </body>
 </html>
