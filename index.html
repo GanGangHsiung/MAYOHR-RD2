@@ -3,365 +3,464 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GigSwipe | Next Gen Job Matching</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <title>2026 寶馬狂奔 - 熊剛的紅包抽獎</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        :root {
-            --primary-color: #FF4B7D;
-            --primary-gradient: linear-gradient(135deg, #FF4B7D, #FF8E53);
-            --bg-color: #F0F2F5;
-            --glass-bg: rgba(255, 255, 255, 0.8);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --card-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            --text-main: #333;
-            --text-sub: #666;
-            --btn-reject: #FF4B4B;
-            --btn-like: #4ECC94;
-            --btn-rewind: #FFBA00;
-        }
-
-        body.mode-boss {
-            --primary-color: #4B79FF;
-            --primary-gradient: linear-gradient(135deg, #4B79FF, #00C6FF);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+        :root { --primary-red: #e63946; --gold: #ffb703; --pink: #ff69b4; --dark-red: #9b2226; --shiny-gold: #fff3b0; --bg-gradient: linear-gradient(135deg, #8b0000 0%, #e63946 50%, #d00000 100%); }
+        body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg-gradient); height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; }
         
-        body {
-            font-family: 'Poppins', 'Noto Sans TC', sans-serif;
-            background-color: #1a1a1a;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; overflow: hidden;
-        }
-
-        #app-frame {
-            width: 375px; height: 660px;
-            background: var(--bg-color); border-radius: 40px;
-            position: relative; overflow: hidden;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
-        }
-
-        /* Splash Screen */
+        /* === 新增：開場動畫樣式 === */
         #splash-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--primary-gradient); z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: white; transition: opacity 0.5s ease;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #9b2226 0%, #000000 100%);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease-out, visibility 1s;
         }
-        .logo-pulse { font-size: 80px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .splash-content { text-align: center; padding: 20px; }
+        .splash-text {
+            color: var(--gold);
+            font-size: 2.2rem;
+            font-weight: 900;
+            line-height: 1.6;
+            text-shadow: 0 0 20px rgba(255, 183, 3, 0.6);
+        }
+        .char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(30px) scale(0.5);
+            animation: charAppear 0.5s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: linear-gradient(180deg, #fff3b0 0%, #ffb703 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        @keyframes charAppear { to { opacity: 1; transform: translateY(0) scale(1); } }
+        /* ======================== */
 
-        /* Header */
-        header {
-            position: absolute; top: 0; left: 0; width: 100%;
-            padding: 20px; display: flex; justify-content: space-between; align-items: center;
-            z-index: 100; background: var(--glass-bg); backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border);
+        /* 紅包雨 */
+        .red-packet { position: absolute; width: 30px; height: 45px; background: #ff4d4d; border: 2px solid #ffcc00; border-radius: 4px; top: -50px; z-index: 1; opacity: 0.7; pointer-events: none; animation: fall linear infinite; }
+        .red-packet::after { content: "🧧"; display: flex; justify-content: center; align-items: center; font-size: 15px; height: 100%; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+        /* 主容器 */
+        .container { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); padding: 2rem; border-radius: 30px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); width: 90%; max-width: 420px; text-align: center; border: 5px solid var(--gold); position: relative; z-index: 10; }
+        
+        /* 步驟切換動畫 */
+        .step { display: none; animation: fadeIn 0.6s cubic-bezier(0.39, 0.575, 0.565, 1); }
+        .step.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        h2 { color: var(--dark-red); margin-bottom: 1rem; font-size: 1.8rem; font-weight: 900; }
+        p { color: #444; line-height: 1.6; }
+        
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #eee; border-radius: 15px; font-size: 1rem; outline: none; box-sizing: border-box; }
+        input:focus, select:focus { border-color: var(--gold); }
+
+        button { background: linear-gradient(to bottom, var(--primary-red), var(--dark-red)); color: white; border: none; padding: 16px 28px; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; box-shadow: 0 6px 20px rgba(155, 34, 38, 0.4); transition: 0.3s; width: 100%; margin-top: 10px; position: relative; overflow: hidden; }
+        button:active { transform: scale(0.95); }
+
+        /* 老虎機樣式 */
+        .slot-machine { background: linear-gradient(145deg, #fff0f5, #fff9f0); border-radius: 20px; padding: 20px 10px; margin: 15px 0; border: 3px double var(--gold); }
+        .slot-reel { 
+            width: 45px; height: 65px; 
+            background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 50%, #ffffff 100%); 
+            border: 3px solid var(--gold); 
+            border-radius: 12px; 
+            font-size: 2.8rem; font-weight: 900; color: var(--primary-red); 
+            display: flex; justify-content: center; align-items: center; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1); 
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2), 0 4px 10px rgba(0,0,0,0.3);
+            overflow: hidden; transition: all 0.1s; 
+        }
+        
+        .spinning { 
+            filter: blur(1.5px); transform: scale(1.05); 
+            border-color: var(--pink);
+            background: linear-gradient(180deg, #fff3b0 0%, #ffffff 50%, #fff3b0 100%);
+            animation: pulseBorder 0.2s infinite alternate;
+        }
+        @keyframes pulseBorder {
+            from { box-shadow: 0 0 5px var(--gold); }
+            to { box-shadow: 0 0 15px var(--pink); }
         }
 
-        .toggle-switch {
-            background: #e0e0e0; border-radius: 20px; padding: 4px;
-            display: flex; cursor: pointer; position: relative; width: 100px; height: 36px;
-            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1);
-        }
-        .toggle-indicator {
-            position: absolute; top: 4px; left: 4px; width: 46px; height: 28px;
-            background: white; border-radius: 16px; transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-        body.mode-boss .toggle-indicator { transform: translateX(46px); }
-        .toggle-labels { width: 100%; display: flex; position: relative; z-index: 2; font-size: 12px; font-weight: bold; line-height: 28px; color: #888; }
-        .toggle-labels span { width: 50%; text-align: center; }
-        .active-label { color: var(--primary-color); }
+        .history-pills { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 10px;}
+        .pill { background: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; color: var(--dark-red); border: 1px solid var(--gold); font-weight: bold; animation: popIn 0.3s ease; }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
 
-        /* Card System */
-        #card-container { position: relative; width: 100%; height: 100%; padding-top: 80px; display: flex; justify-content: center; }
-        .card {
-            position: absolute; width: 335px; height: 470px;
-            background: white; border-radius: 30px; box-shadow: var(--card-shadow);
-            overflow: hidden; cursor: grab; transition: transform 0.1s linear;
-        }
-        .card img { width: 100%; height: 60%; object-fit: cover; pointer-events: none; }
-        .card-info { padding: 15px 20px; height: 40%; display: flex; flex-direction: column; }
-        .card-header h2 { font-size: 20px; color: var(--text-main); }
-        .meta { display: flex; gap: 10px; margin: 5px 0; font-size: 12px; color: #888; }
-        .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-        .tag { background: #f0f2f5; color: #666; padding: 4px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
-        .tag-dist { background: #E3F2FD; color: #2196F3; } /* 距離標籤 */
+        /* 最終金額特效 */
+        .final-amount { font-size: 3.5rem; color: var(--primary-red); font-weight: 900; text-shadow: 4px 4px 0px var(--gold); background: linear-gradient(90deg, #ffb703, #fff, #ffb703); background-size: 200% auto; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: goldShine 3s linear infinite; display: inline-block; margin: 10px 0; }
+        @keyframes goldShine { 0% { background-position: -200%; } 100% { background-position: 200%; } }
 
-        /* Badges */
-        .status-badge {
-            position: absolute; top: 30px; padding: 5px 15px; border: 4px solid; border-radius: 10px;
-            font-size: 28px; font-weight: 900; opacity: 0; z-index: 10;
-        }
-        .badge-like { right: 20px; border-color: var(--btn-like); color: var(--btn-like); transform: rotate(15deg); }
-        .badge-nope { left: 20px; border-color: var(--btn-reject); color: var(--btn-reject); transform: rotate(-15deg); }
+        .lucky-bag { font-size: 60px; display: none; margin: 20px auto; animation: shake 0.5s infinite; line-height: 1.2; }
+        @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(10deg); } 50% { transform: rotate(0deg); } 75% { transform: rotate(-10deg); } 100% { transform: rotate(0deg); } }
 
-        /* Controls */
-        .controls {
-            position: absolute; bottom: 25px; width: 100%;
-            display: flex; justify-content: center; align-items: center; gap: 15px; z-index: 100;
-        }
-        .btn-round {
-            width: 55px; height: 55px; border-radius: 50%; background: white;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.08); border: none; display: flex;
-            justify-content: center; align-items: center; font-size: 20px; cursor: pointer; transition: 0.2s;
-        }
-        .btn-round:active { transform: scale(0.9); }
-        .btn-nope { color: var(--btn-reject); }
-        .btn-like { color: var(--btn-like); font-size: 24px; }
-        .btn-rewind { color: var(--btn-rewind); width: 40px; height: 40px; font-size: 16px; }
+        #praiseSection { display: none; margin-top: 20px; padding: 15px; background: #fffceb; border-radius: 15px; border: 2px dashed #ffb703; animation: slideUp 0.8s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Detail Modal */
-        #detail-modal {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 2000; transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            display: flex; flex-direction: column;
-        }
-        #detail-modal.open { transform: translateY(0); }
-        .detail-img { width: 100%; height: 40%; object-fit: cover; }
-        .detail-body { padding: 30px; overflow-y: auto; flex: 1; }
-
-        /* Match Overlay & Chat (保持先前邏輯) */
-        #match-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 3000; display: flex;
-            flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: 0.3s;
-        }
-        #match-overlay.active { opacity: 1; pointer-events: auto; }
-        .match-title { font-size: 40px; color: #4ECC94; font-weight: 900; font-style: italic; margin-bottom: 30px; }
-
+        .line-btn { background: linear-gradient(135deg, #06c755 0%, #009900 100%); animation: pulse-line 2s infinite; box-shadow: 0 5px 15px rgba(6, 199, 85, 0.4); }
+        @keyframes pulse-line { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+        
+        .bonus-note { background: #ffeaea; color: #d63031; font-weight: bold; padding: 8px; border-radius: 8px; border: 1px solid #ff7675; display: none; font-size: 0.9rem; margin: 10px 0; animation: blink 2s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
     </style>
 </head>
 <body>
 
-    <div id="app-frame">
-        <div id="splash-screen">
-            <i class="fas fa-fire logo-pulse"></i>
-            <h1 style="margin-top: 15px; letter-spacing: 2px;">GigSwipe</h1>
-        </div>
+<div id="splash-screen">
+    <div class="splash-content">
+        <div class="splash-text" id="splash-title"></div>
+    </div>
+</div>
 
-        <header>
-            <i class="fas fa-user-circle" style="font-size: 24px; color: #ccc;"></i>
-            <div class="toggle-switch" onclick="toggleMode()">
-                <div class="toggle-indicator"></div>
-                <div class="toggle-labels">
-                    <span id="label-c" class="active-label">找工</span>
-                    <span id="label-b">找人</span>
-                </div>
-            </div>
-            <i class="fas fa-comment-dots" style="font-size: 24px; color: #ccc;"></i>
-        </header>
+<audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+<audio id="spinSound" src="https://assets.mixkit.co/active_storage/sfx/2016/2016-preview.mp3"></audio>
+<audio id="stopSound" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
+<audio id="popSound" src="https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3"></audio>
 
-        <div id="card-container"></div>
-
-        <div class="controls">
-            <button class="btn-round btn-rewind" onclick="rewind()"><i class="fas fa-undo"></i></button>
-            <button class="btn-round btn-nope" onclick="forceSwipe('left')"><i class="fas fa-times"></i></button>
-            <button class="btn-round btn-like" onclick="forceSwipe('right')"><i class="fas fa-heart"></i></button>
-        </div>
-
-        <div id="detail-modal">
-            <img id="detail-img" class="detail-img" src="">
-            <div class="detail-body">
-                <h2 id="detail-name">名稱</h2>
-                <p id="detail-title" style="color:var(--primary-color); font-weight:600;"></p>
-                <div id="detail-meta" class="meta"></div>
-                <hr style="margin:20px 0; opacity:0.1;">
-                <p style="line-height:1.6; color:#555;">這是一個針對 Z 世代開發的媒合說明。這裡會顯示工作的詳細內容、公司文化，或是候選人的作品集連結與自我介紹。</p>
-                <button class="btn-round" style="width:100%; border-radius:15px; background:var(--primary-gradient); color:white; margin-top:30px;" onclick="closeDetail()">返回滑動</button>
-            </div>
-        </div>
-
-        <div id="match-overlay">
-            <div class="match-title">IT'S A MATCH!</div>
-            <img id="match-avatar" src="" style="width:120px; height:120px; border-radius:50%; border:4px solid white; margin-bottom:20px;">
-            <p style="color:white; margin-bottom:30px;">雙方都感興趣，立刻開始溝通吧！</p>
-            <button class="btn-round" style="width:200px; border-radius:30px; background:white; color:var(--primary-color); font-weight:700;" onclick="closeMatch()">太棒了</button>
-        </div>
+<div class="container">
+    <div id="step1" class="step active">
+        <h2>🐎 2026 馬到成功</h2>
+        <p>紅包領取系統身分識別：</p>
+        <input type="text" id="nameInput" placeholder="請輸入誰是世界上最帥的兒子？">
+        <button onclick="App.checkStep1()">快馬加鞭開啟福氣門</button>
     </div>
 
-    <script>
-        const C_DATA = [
-            { id: 'c1', name: 'MAYO 鼎恆數位', title: '臨時專案助理', price: '$200/hr', loc: '竹北', tags: ['#HRTech', '#行政'], isTarget: true, img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500' },
-            { id: 'c2', name: 'StayReal Café', title: '假日外場', price: '$190/hr', loc: '中山區', tags: ['#現領', '#文青'], isTarget: false, img: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=500' },
-            { id: 'c3', name: 'Ogilvy 奧美', title: '設計實習生', price: '$210/hr', loc: '信義區', tags: ['#視覺', '#廣告'], isTarget: false, img: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=500' }
-        ];
+    <div id="step2" class="step">
+        <h2>🐎 萬馬奔騰</h2>
+        <p>回顧 2025 年對愛子「熊剛」評分：</p>
+        <select id="satisfaction">
+            <option value="">-- 請給予愛的評分 --</option>
+            <option value="100">✨ 完美！兒子是匹超級汗血寶馬</option>
+            <option value="90">✨ 優秀！今年表現亮眼</option>
+            <option value="80">✨ 滿意！穩定進步中</option>
+        </select>
+        <button onclick="App.checkStep2()">確認評鑑</button>
+    </div>
 
-        const B_DATA = [
-            { id: 'b1', name: '熊小剛', title: '交大資工碩', price: '$250/hr', loc: '新竹', tags: ['#Backend', '#Python'], isTarget: true, img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500' },
-            { id: 'b2', name: 'Jimmy', title: '資深 UI 設計', price: '面議', loc: '台北', tags: ['#Figma', '#設計師'], isTarget: true, img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500' }
-        ];
+    <div id="step3" class="step">
+        <h2>💖 熊剛的悄悄話</h2>
+        <div style="text-align: left; background: #fff5f5; padding: 15px; border-radius: 15px; border-left: 5px solid var(--primary-red);">
+            <p style="margin: 0; font-size: 0.95rem;">
+                親愛的爸爸媽媽，台北生活步調快，常常忙到沒時間好好陪您們，上班後也比較沒時間看股票。<br><br>
+                2026 馬年到了，這份紅包不只是金額，更代表我滿滿的感謝與愛。<b>不論抽到多少，兒子的孝心都是不打折的！</b>
+            </p>
+        </div>
+        <button onclick="App.nextStep(3, '3_5')">知道了，辛苦了，乖兒子 ❤️</button>
+    </div>
 
-        let currentMode = 'c';
-        let activeData = [];
-        let history = []; // 用於 Rewind
-        let currentCardIndex = 0;
+    <div id="step3_5" class="step">
+        <h2>🧧 財氣匯聚中</h2>
+        <p>爸爸媽媽，準備好迎接<br><b style="color:#e63946; font-size: 1.5rem;">馬年騰飛特大紅包</b>了嗎？</p>
+        <button onclick="App.nextStep('3_5', 4)">我準備好了！大獎來！</button>
+    </div>
 
-        window.onload = () => {
-            setTimeout(() => { document.getElementById('splash-screen').style.opacity = '0'; 
-            setTimeout(() => document.getElementById('splash-screen').style.display='none', 500); }, 1500);
-            renderCards();
-        };
+    <div id="step4" class="step">
+        <h2>🎰 財神來敲門</h2>
+        <p>系統連抽三次取最高值並加碼！</p>
+        <div class="slot-machine">
+            <div style="display: flex; justify-content: center; gap: 4px; margin-bottom: 15px;">
+                <div class="slot-reel" id="reel0">$</div>
+                <div class="slot-reel" id="reel1">0</div>
+                <div class="slot-reel" id="reel2">0</div>
+                <div class="slot-reel" id="reel3">0</div>
+                <div class="slot-reel" id="reel4">0</div>
+                <div class="slot-reel" id="reel5">0</div>
+            </div>
+            <div class="history-pills" id="historyPills"></div>
+        </div>
+        <button id="drawBtn" onclick="App.draw()">點我抽紅包 (剩 3 次)</button>
+    </div>
 
-        function toggleMode() {
-            currentMode = currentMode === 'c' ? 'b' : 'c';
-            document.body.className = currentMode === 'b' ? 'mode-boss' : '';
-            document.getElementById('label-c').className = currentMode === 'c' ? 'active-label' : '';
-            document.getElementById('label-b').className = currentMode === 'b' ? 'active-label' : '';
-            renderCards();
+    <div id="step5" class="step">
+        <div id="luckyBag" class="lucky-bag">💰</div>
+        <div id="resultContent" style="display:none;">
+            <div style="font-size: 2rem; color: var(--dark-red); font-weight: 900;">🧧 恭喜爹娘 🧧</div>
+            <p style="margin-top:5px;">您的 2026 馬年發財紅包總額：</p>
+            <div id="bonusDisplay" style="display:none; color: var(--pink); font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;">
+                兒子驚喜加碼：+$<span id="bonusValue">0</span>
+            </div>
+            <div class="final-amount" id="finalPrize">$0</div>
+            <div id="bonusNote" class="bonus-note">
+                ✨ 系統偵測到數字「4」<br>已自動為您升級為「8」發財！ ✨
+            </div>
+            <div id="praiseSection">
+                <p style="font-weight: bold; color: #d4a017;">✨ 偷偷告訴妳 ✨</p>
+                <p style="font-size: 0.9rem;">整個程式介面、紅包雨特效、抽獎邏輯、老虎機畫面，都是你兒子<b>親手寫的</b>，是不是很厲害！</p>
+                <button class="line-btn" onclick="LineBridge.send()">真的非常厲害！傳給兒子領獎 ❤️</button>
+            </div>
+            <p style="color: #666; font-size: 0.75rem; margin-top: 15px;">[ 請截圖此畫面傳給熊剛 ]</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const Config = {
+        minBase: 12800, 
+        maxBase: 34800,
+        pinkGoldColors: ['#ff69b4', '#ffd700', '#ffffff', '#ff1493', '#ffcc00'],
+        loadingTexts: ["手氣加持中...", "財神點錢中...", "馬年財運亨通..."]
+    };
+
+    const AudioManager = {
+        play(id) { const el = document.getElementById(id); if (el) { el.currentTime = 0; el.play().catch(e=>{}); } },
+        init() { 
+            ['clickSound', 'spinSound', 'stopSound', 'popSound'].forEach(id => { 
+                const a = document.getElementById(id); if(a){ a.muted = true; a.play().then(()=>{ a.muted=false; a.pause(); }).catch(e=>{}); } 
+            }); 
+            if('speechSynthesis' in window) {
+                const initialMsg = new SpeechSynthesisUtterance('');
+                window.speechSynthesis.speak(initialMsg);
+            }
+        },
+        speak(text) { 
+            if('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); 
+                const msg = new SpeechSynthesisUtterance(text); 
+                msg.lang = 'zh-TW'; 
+                msg.rate = 1.0; 
+                msg.volume = 1.0;
+                window.speechSynthesis.speak(msg); 
+            }
         }
+    };
 
-        function renderCards() {
-            const container = document.getElementById('card-container');
-            container.innerHTML = '';
-            activeData = currentMode === 'c' ? [...C_DATA] : [...B_DATA];
+    const Visuals = {
+        createRain() {
+            const rp = document.createElement('div'); rp.className = 'red-packet';
+            rp.style.left = Math.random() * 100 + 'vw';
+            rp.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(rp); setTimeout(() => rp.remove(), 5000);
+        },
+        launchEpicConfetti() {
+            const duration = 3000; const end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: Config.pinkGoldColors });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: Config.pinkGoldColors });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        },
+        clickBurst(x, y) {
+            confetti({ particleCount: 30, spread: 60, origin: { x: x/window.innerWidth, y: y/window.innerHeight }, colors: Config.pinkGoldColors, gravity: 0.5, ticks: 100 });
+        },
+        // === 新增：金元寶萬馬奔騰轉場 ===
+        launchGoldTransition() {
+            const end = Date.now() + 1500;
+            (function frame() {
+                confetti({
+                    particleCount: 10,
+                    angle: Math.random() * 360,
+                    spread: 70,
+                    origin: { x: Math.random(), y: Math.random() - 0.2 },
+                    colors: ['#ffb703', '#fff3b0', '#ffd700'],
+                    ticks: 200,
+                    gravity: 1.2,
+                    shapes: ['circle'], // 模擬金幣/元寶
+                    scalar: 2 // 讓粒子大一點
+                });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    };
+
+    // === 新增：開場動畫執行邏輯 ===
+    window.addEventListener('DOMContentLoaded', () => {
+        const titleText = "2026 寶馬狂奔\n歡迎來到熊剛的\n新年紅包抽獎系統";
+        const container = document.getElementById('splash-title');
+        
+        titleText.split("").forEach((char, i) => {
+            const span = document.createElement('span');
+            span.className = 'char';
+            if (char === "\n") {
+                container.appendChild(document.createElement('br'));
+            } else {
+                span.innerText = char;
+                span.style.animationDelay = `${i * 0.12}s`;
+                container.appendChild(span);
+            }
+        });
+
+        setTimeout(() => {
+            // 轉場開始
+            Visuals.launchGoldTransition();
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.visibility = 'hidden';
+                AudioManager.speak("歡迎爸爸媽媽！祝您二位馬到成功，點擊快馬加鞭開啟好運吧！");
+            }, 1000);
+        }, titleText.length * 120 + 2000);
+    });
+
+    document.addEventListener('click', (e) => {
+        AudioManager.play('clickSound');
+        if(e.target.tagName !== 'BUTTON') Visuals.clickBurst(e.clientX, e.clientY);
+    }, {passive: true});
+
+    const LineBridge = {
+        send() {
+            const amount = App.state.finalMaxAmount;
+            const msg = `兒子，馬到成功!紅包抽到了 $${amount.toLocaleString()}！\n那個老虎機跟抽獎的功能太貼心了！\n你寫程式真的太厲害了，爸爸媽媽以你為榮！❤️`;
+            window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(msg)}`;
+        }
+    };
+
+    const App = {
+        state: { scores: [], count: 3, finalMaxAmount: 0, wasModified: false },
+        
+        clamp(val, min, max) {
+            return Math.min(Math.max(val, min), max);
+        },
+
+        nextStep(current, next) {
+            document.getElementById('step' + current).classList.remove('active');
+            document.getElementById('step' + next).classList.add('active');
+        },
+        checkStep1() { 
+            if (document.getElementById('nameInput').value.includes("熊剛")) this.nextStep(1, 2); 
+            else alert("哎呀！輸入「熊剛」試試看，他是最帥的！"); 
+        },
+        checkStep2() { if (document.getElementById('satisfaction').value !== "") this.nextStep(2, 3); },
+        avoidFour(num) { 
+            let str = num.toString(); 
+            if (str.includes('4')) { 
+                this.state.wasModified = true; 
+                return parseInt(str.replace(/4/g, '8')); 
+            }
+            return num; 
+        },
+
+        draw() {
+            const btn = document.getElementById('drawBtn'); 
+            btn.disabled = true;
+            AudioManager.play('spinSound');
             
-            activeData.forEach((d, i) => {
-                const card = createCard(d, i);
-                container.appendChild(card);
+            let rawAmount = Math.floor(Math.random() * (Config.maxBase - Config.minBase + 1) + Config.minBase);
+            let displayAmount = this.avoidFour(rawAmount);
+            let finalDigits = displayAmount.toString().padStart(5, '0');
+
+            const reels = [1,2,3,4,5].map(i => document.getElementById('reel' + i));
+            
+            const timers = reels.map((reel, idx) => {
+                reel.classList.add('spinning');
+                return setInterval(() => {
+                    reel.innerText = Math.floor(Math.random() * 10);
+                }, 50 + (idx * 20)); 
             });
-            setupTopCard();
-        }
 
-        function createCard(data, index) {
-            const el = document.createElement('div');
-            el.className = 'card';
-            el.style.zIndex = index;
-            // 隨機生成 1km 內的即時距離
-            const dist = (Math.random() * 0.9 + 0.1).toFixed(1);
-            
-            el.innerHTML = `
-                <div class="status-badge badge-like">LIKE</div>
-                <div class="status-badge badge-nope">NOPE</div>
-                <img src="${data.img}">
-                <div class="card-info">
-                    <div class="card-header">
-                        <h2>${data.name}</h2>
-                        <p style="color:var(--primary-color); font-size:14px; font-weight:600;">${data.title}</p>
-                    </div>
-                    <div class="meta">
-                        <span><i class="fas fa-map-marker-alt"></i> ${data.loc}</span>
-                        <span><i class="fas fa-coins"></i> ${data.price}</span>
-                    </div>
-                    <div class="tags">
-                        <span class="tag tag-dist"><i class="fas fa-location-arrow"></i> 距離 ${dist} km</span>
-                        ${data.tags.map(t => `<span class="tag">${t}</span>`).join('')}
-                    </div>
-                </div>
-            `;
-            
-            el.onclick = (e) => { if(el.dataset.dragging !== 'true') openDetail(data, dist); };
-            return el;
-        }
+            let textIdx = 0;
+            const textInt = setInterval(() => { btn.innerText = Config.loadingTexts[textIdx++ % 3]; }, 400);
 
-        function setupTopCard() {
-            const cards = document.querySelectorAll('.card');
-            if (cards.length === 0) return;
-            const topCard = cards[cards.length - 1];
-            currentCardIndex = cards.length - 1;
-            applySwipe(topCard);
-        }
+            reels.forEach((reel, i) => {
+                setTimeout(() => {
+                    clearInterval(timers[i]);
+                    reel.classList.remove('spinning');
+                    reel.innerText = finalDigits[i];
+                    AudioManager.play('stopSound');
+                    
+                    reel.style.transform = 'scale(1.2)';
+                    setTimeout(() => reel.style.transform = 'scale(1)', 100);
 
-        function applySwipe(card) {
-            let startX = 0, currentX = 0, isDragging = false;
-            const likeBadge = card.querySelector('.badge-like');
-            const nopeBadge = card.querySelector('.badge-nope');
+                    if (i === 4) {
+                        clearInterval(textInt);
+                        this.state.scores.push(displayAmount);
+                        this.state.count--;
+                        document.getElementById('historyPills').innerHTML = this.state.scores.map(s => `<span class="pill">$${s.toLocaleString()}</span>`).join('');
+                        
+                        if (this.state.count > 0) { 
+                            btn.disabled = false; 
+                            btn.innerText = `再抽一次 (剩 ${this.state.count} 次)`; 
+                            } else { 
+                            btn.disabled = false; 
+                            btn.innerText = "查看最終加碼成果"; 
+                            btn.classList.add('line-btn'); 
+                            btn.onclick = () => {
+                            AudioManager.init(); 
+                            this.showFinal();
+                            }; 
+                        }
+                    }
+                }, 1200 + (i * 500)); 
+            });
+        },
 
-            const start = (e) => {
-                isDragging = true;
-                card.dataset.dragging = 'false';
-                startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-                card.style.transition = 'none';
-            };
+        showFinal() {
+            this.nextStep(4, 5);
+            const bag = document.getElementById('luckyBag');
+            const content = document.getElementById('resultContent');
+            bag.style.display = 'block';
+            bag.innerText = "💰"; 
+            AudioManager.play('spinSound');
 
-            const move = (e) => {
-                if (!isDragging) return;
-                currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-                const deltaX = currentX - startX;
-                if(Math.abs(deltaX) > 5) card.dataset.dragging = 'true';
-                
-                const rotate = deltaX * 0.05;
-                card.style.transform = `translateX(${deltaX}px) rotate(${rotate}deg)`;
-                
-                const opacity = Math.min(Math.abs(deltaX) / 100, 1);
-                if (deltaX > 0) { likeBadge.style.opacity = opacity; nopeBadge.style.opacity = 0; }
-                else { nopeBadge.style.opacity = opacity; likeBadge.style.opacity = 0; }
-            };
-
-            const end = () => {
-                if (!isDragging) return;
-                isDragging = false;
-                const deltaX = currentX - startX;
-                if (Math.abs(deltaX) > 100) {
-                    const dir = deltaX > 0 ? 1 : -1;
-                    completeSwipe(card, dir);
-                } else {
-                    card.style.transition = '0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                    card.style.transform = 'translateX(0) rotate(0)';
-                    likeBadge.style.opacity = 0; nopeBadge.style.opacity = 0;
-                }
-            };
-
-            card.addEventListener('mousedown', start);
-            window.addEventListener('mousemove', move);
-            window.addEventListener('mouseup', end);
-            card.addEventListener('touchstart', start);
-            card.addEventListener('touchmove', move);
-            card.addEventListener('touchend', end);
-        }
-
-        function completeSwipe(card, dir) {
-            card.style.transition = '0.5s ease-in';
-            card.style.transform = `translateX(${dir * 500}px) rotate(${dir * 30}deg)`;
-            history.push(card); // 存入歷史紀錄
             setTimeout(() => {
-                card.style.display = 'none';
-                if (dir === 1 && card.querySelector('h2').innerText.includes('MAYO') || card.querySelector('h2').innerText.includes('熊小剛')) {
-                    triggerMatch(card);
+                let basePrize = Math.max(...this.state.scores);
+                const extraGift = Math.floor(Math.random() * 2001) + 3000;
+                let total = basePrize + extraGift;
+                this.state.wasModified = false;
+                let processedTotal = this.avoidFour(total);
+                
+                if (processedTotal < 32888) {
+                    AudioManager.speak("哎呀！財氣還不夠，重新匯聚好運！");
+                    bag.style.fontSize = "20px";
+                    bag.innerText = "金額太低了，兒子加碼重抽中...🔄";
+                    
+                    setTimeout(() => {
+                        this.state.scores = [];
+                        this.state.count = 3;
+                        document.getElementById('historyPills').innerHTML = '';
+                        document.getElementById('drawBtn').disabled = false;
+                        document.getElementById('drawBtn').innerText = "點我抽紅包 (剩 3 次)";
+                        document.getElementById('drawBtn').onclick = () => this.draw();
+                        document.getElementById('drawBtn').classList.remove('line-btn');
+                        bag.style.fontSize = "60px";
+                        this.nextStep(5, '3_5');
+                    }, 2000);
+                    return;
                 }
-                setupTopCard();
-            }, 300);
-        }
 
-        function forceSwipe(direction) {
-            const cards = document.querySelectorAll('.card');
-            const topCard = cards[currentCardIndex];
-            if (topCard) completeSwipe(topCard, direction === 'right' ? 1 : -1);
-        }
+                bag.style.display = 'none';
+                content.style.display = 'block';
+                AudioManager.play('popSound');
+                
+                this.state.finalMaxAmount = this.clamp(processedTotal, 32888, 39888);
+                
+                document.getElementById('bonusValue').innerText = extraGift.toLocaleString();
+                document.getElementById('bonusDisplay').style.display = 'block';
+                if (this.state.wasModified) document.getElementById('bonusNote').style.display = 'block';
 
-        function rewind() {
-            if (history.length === 0) return;
-            const lastCard = history.pop();
-            lastCard.style.display = 'block';
-            lastCard.style.transition = 'none';
-            lastCard.style.transform = 'translateX(0) rotate(0)';
-            lastCard.querySelector('.badge-like').style.opacity = 0;
-            lastCard.querySelector('.badge-nope').style.opacity = 0;
-            setTimeout(() => {
-                lastCard.style.transition = '0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                setupTopCard();
-            }, 10);
+                this.animateValue(document.getElementById('finalPrize'), 0, this.state.finalMaxAmount, 2000);
+                Visuals.launchEpicConfetti();
+                
+                setTimeout(() => {
+                    AudioManager.speak(`哇！恭喜爹爹娘娘！紅包總金額 ${this.state.finalMaxAmount} 元！發大財囉！`);
+                }, 500);
+                
+                setTimeout(() => {
+                    document.getElementById('praiseSection').style.display = 'block';
+                    document.getElementById('praiseSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 2500);
+            }, 2000);
+        },
+    
+        animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 4); 
+                const currentVal = Math.floor(ease * (end - start) + start);
+                obj.innerHTML = "$" + currentVal.toLocaleString();
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
         }
-
-        function openDetail(data, dist) {
-            const modal = document.getElementById('detail-modal');
-            document.getElementById('detail-img').src = data.img;
-            document.getElementById('detail-name').innerText = data.name;
-            document.getElementById('detail-title').innerText = data.title;
-            document.getElementById('detail-meta').innerHTML = `<span><i class="fas fa-location-arrow"></i> 距離 ${dist} km</span> <span><i class="fas fa-coins"></i> ${data.price}</span>`;
-            modal.classList.add('open');
-        }
-
-        function closeDetail() { document.getElementById('detail-modal').classList.remove('open'); }
-        function triggerMatch(card) {
-            document.getElementById('match-avatar').src = card.querySelector('img').src;
-            document.getElementById('match-overlay').classList.add('active');
-        }
-        function closeMatch() { document.getElementById('match-overlay').classList.remove('active'); }
-    </script>
+    };
+    setInterval(Visuals.createRain, 400);
+    document.body.addEventListener('click', AudioManager.init, {once:true});
+</script>
 </body>
 </html>
