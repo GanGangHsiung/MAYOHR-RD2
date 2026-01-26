@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 夢幻星空 - Zoe 的甜蜜紅包</title>
+    <title>2026 夢幻星空 - Zoe 給爹爹娘親的甜蜜紅包</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -169,7 +169,7 @@
         <h2>🎀 Zoe 的悄悄話</h2>
         <div style="text-align: left; background: #fff0f3; padding: 15px; border-radius: 20px; border-left: 5px solid var(--primary-red);">
             <p style="margin: 0; font-size: 0.95rem; color: #d4418e;">
-                親愛的爸爸媽媽，謝謝您們一直把 Zoe 當成小公主疼愛！<br><br>
+                親愛的爹爹娘親，謝謝您們一直把 Zoe 當成小公主疼愛！<br><br>
                 新的一年，我不只要當您們的驕傲，更要當您們的開心果。<b>這份紅包裡裝滿了我的撒嬌跟愛心，要開心收下喔！</b>
             </p>
         </div>
@@ -178,7 +178,7 @@
 
     <div id="step3_5" class="step">
         <h2>✨ 財氣匯聚中</h2>
-        <p>爸爸媽媽，準備好迎接<br><b style="color:#d4418e; font-size: 1.5rem;">Zoe 專屬甜蜜大紅包</b>了嗎？</p>
+        <p>爹爹娘親，準備好迎接<br><b style="color:#d4418e; font-size: 1.5rem;">Zoe 專屬甜蜜大紅包</b>了嗎？</p>
         <button onclick="App.nextStep('3_5', 4)">寶貝，我準備好了！</button>
     </div>
 
@@ -202,7 +202,7 @@
     <div id="step5" class="step">
         <div id="luckyBag" class="lucky-bag">🎁</div>
         <div id="resultContent" style="display:none;">
-            <div style="font-size: 2rem; color: var(--dark-red); font-weight: 900;">🌸 恭喜爹娘 🌸</div>
+            <div style="font-size: 2rem; color: var(--dark-red); font-weight: 900;">🌸 恭喜爹爹娘親 🌸</div>
             <p style="margin-top:5px;">您的 2026 甜蜜紅包總額：</p>
             <div id="bonusDisplay" style="display:none; color: #ff7eb3; font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;">
                 Zoe 驚喜加碼：+$<span id="bonusValue">0</span>
@@ -298,7 +298,7 @@
             splash.style.opacity = '0';
             setTimeout(() => {
                 splash.style.visibility = 'hidden';
-                AudioManager.speak("歡迎爸爸媽媽！祝您二位新年快樂，快來領取我的甜蜜愛心吧！");
+                AudioManager.speak("歡迎爹爹娘親！祝您二位新年快樂，快來領取我的甜蜜愛心吧！");
             }, 1000);
         }, titleText.length * 150 + 2000);
     });
@@ -311,7 +311,7 @@
     const LineBridge = {
         send() {
             const amount = App.state.finalMaxAmount;
-            const msg = `Zoe 寶貝，新年快樂!妳做的紅包系統太美了！\n我抽到了 $${amount.toLocaleString()}！\n不愧是我們最可愛的女兒，爸爸媽媽愛妳！❤️`;
+            const msg = `Zoe 寶貝，新年快樂!妳做的紅包系統太美了！\n我抽到了 $${amount.toLocaleString()}！\n不愧是我們最可愛的女兒，爹娘愛妳！❤️`;
             window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(msg)}`;
         }
     };
@@ -404,7 +404,7 @@
                 if (this.state.wasModified) document.getElementById('bonusNote').style.display = 'block';
                 this.animateValue(document.getElementById('finalPrize'), 0, this.state.finalMaxAmount, 2000);
                 Visuals.launchEpicConfetti();
-                setTimeout(() => { AudioManager.speak(`哇！恭喜爹爹娘娘！紅包總金額 ${this.state.finalMaxAmount} 元！Zoe 愛您們唷！`); }, 500);
+                setTimeout(() => { AudioManager.speak(`哇！恭喜爹爹娘親！紅包總金額 ${this.state.finalMaxAmount} 元！Zoe 愛您們唷！`); }, 500);
                 setTimeout(() => { document.getElementById('praiseSection').style.display = 'block'; document.getElementById('praiseSection').scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 2500);
             }, 2000);
         },
